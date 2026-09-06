@@ -4,6 +4,7 @@ Reads a DSC PC1555MX (Power632) PowerSeries panel over its Keybus and exposes zo
 arming, and trouble state — first over USB serial, then as a self-hosted web page on
 your LAN. No cloud, no broker, no subscription.
 
+- [`docs/panel-bringup.md`](docs/panel-bringup.md) — **start here if the panel has been sitting unpowered** — staged diagnostics
 - [`docs/wiring.md`](docs/wiring.md) — hardware, resistor divider, parts list
 - [`docs/pc1555mx-programming.md`](docs/pc1555mx-programming.md) — installer programming sections
 

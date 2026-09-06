@@ -1,0 +1,350 @@
+# Panel bring-up and triage — PC1555MX after long storage
+
+For a PC1555MX (Power632) that has been unpowered for roughly 20 years, is **not
+monitored**, and is **not armed**. Goal: find out whether the board still works,
+and if it doesn't, find out *which part* doesn't.
+
+> **Why this order.** The obvious move is to wire up the ESP32 and see if anything
+> comes out. Don't. If the serial output stays empty, that single symptom is
+> consistent with a dead panel, a dead transformer, a miswired divider, wrong GPIO
+> pins, the arduino-esp32 3.x incompatibility, a blown Aux fuse, or a panel that is
+> powered but not clocking. You would have learned almost nothing. A multimeter
+> separates those in fifteen minutes. **The ESP32 is stage 6, not stage 1.**
+
+---
+
+## Before you start
+
+### Tools
+
+| Item | Need | Note |
+|---|---|---|
+| Digital multimeter | Required | DC volts, AC volts, continuity |
+| Screwdrivers | Required | Terminal screws are usually slotted |
+| Gloves + eye protection | Required | For handling the old battery only |
+| 16.5 VAC 40 VA transformer | Required | The panel's original, or a replacement |
+| Known-good 12 V SLA battery | Strongly recommended | 4–7 Ah; see stage 3 |
+| DSC PowerSeries keypad | Strongly recommended | Best single diagnostic you can own |
+| Oscilloscope or logic analyzer | Optional | Makes stage 4 definitive rather than inferred |
+
+### Safety
+
+- The transformer's **mains side** is line voltage. Unplug it at the wall before
+  touching its terminals. Everything downstream is low-voltage and safe to probe.
+- A 20-year-old sealed lead-acid battery may have vented sulfuric acid. Gloves, eye
+  protection, and don't tip it. Recycle it at any auto parts store — do not bin it.
+- **Never disconnect a Keybus wire while the panel is powered.** Kill AC and unplug
+  the battery first. This applies at every stage below.
+
+### Record as you go
+
+Write down every measurement. If you end up asking for help — or asking me — the
+numbers are the whole conversation. A blank template is at the bottom of this file.
+
+---
+
+## Stage 1 — Visual inspection, no power
+
+**Remove the battery before anything else**, even if you think it's fine. If the
+panel has been sitting with a shorted cell, reapplying AC can push current into a
+failed battery.
+
+Check, in order:
+
+1. **The battery itself** — swollen case, crust on the terminals, any wetness or
+   staining in the cabinet below it. A bulged battery has vented; assume the cabinet
+   has been exposed to acid vapor.
+2. **The board near the battery leads** — green, white, or blue-green powder. This is
+   the failure that actually kills stored panels. Surface crust on a terminal cleans
+   up; corrosion that has wicked *under* components or along traces usually doesn't.
+3. **Electrolytic capacitors** — domed tops, split vents, brown residue at the base.
+4. **Burn marks, cracked components, scorched traces.**
+5. **Insect or rodent damage** — nests, chewed insulation, droppings. Common in
+   garage and attic installs, and urine is conductive and corrosive.
+6. **Terminal screws** — loose, or corroded green.
+
+**Pass:** board looks clean, caps look flat-topped, no corrosion spreading from the
+battery area. Continue.
+
+**Stop:** widespread corrosion crossing multiple traces, or visible burn damage. The
+board *may* still be repairable, but you're now doing electronics rework, not bring-up.
+A replacement PC1555MX or a newer PowerSeries board is often cheaper than the hours.
+
+---
+
+## Stage 2 — Transformer, tested alone
+
+A dead transformer mimics a dead panel exactly, and it's the cheaper failure. Rule it
+out before you blame the board.
+
+1. **Disconnect both transformer leads from the panel's AC terminals.** Testing it
+   still connected measures the panel too, which defeats the purpose.
+2. Plug the transformer into the wall.
+3. Meter on **AC volts**, probes across the two low-voltage leads.
+
+| Reading | Meaning |
+|---|---|
+| ~16–19 VAC | Good. Unloaded transformers read above their rating; this is normal. |
+| 0 VAC | Dead transformer, or dead outlet. Check the outlet first. |
+| Well under 16 VAC | Failing. Replace it. |
+
+4. **Unplug the transformer** before reconnecting it to the panel.
+
+**Pass:** roughly 16–19 VAC. Continue.
+
+**Stop:** replace the transformer before going further. Note that a dead transformer
+does not clear the panel of suspicion — it just means you can't test the panel yet.
+
+---
+
+## Stage 3 — First power-up, AC only
+
+Battery still disconnected. Transformer reconnected to the panel's AC terminals, then
+plugged in.
+
+Meter on **DC volts**. Probe the Keybus **Red (+) to Black (−)** at the panel terminals.
+
+| Reading | Meaning | Next |
+|---|---|---|
+| 12.6–14.0 VDC | Panel power supply works | Go to stage 4 |
+| ~0 VDC | No output | See below |
+| Low, e.g. 5–10 VDC | Supply loaded down or failing | Disconnect all field wiring and retest |
+
+If you read 0 V:
+
+- Confirm AC is actually arriving at the panel's AC terminals (meter on AC volts,
+  across them, ~16–19 VAC).
+- Check the onboard fuse or PTC on the Aux output. Some PowerSeries boards use a
+  resettable PTC that takes a minute to recover after a fault.
+- **Try adding a known-good 12 V battery.** This is the important one — some
+  PowerSeries panels will not start on AC alone and need the battery present to boot.
+  A panel that stays dark on AC and comes alive with a battery is *not* a dead panel.
+  Treat "won't start AC-only" as inconclusive rather than a failure.
+
+**Pass:** ~13.8 VDC on the Keybus. That means the transformer, the rectifier, and the
+regulator all work. Continue.
+
+---
+
+## Stage 4 — Is the CPU actually running?
+
+Power present doesn't mean the processor is alive. This stage is the real question,
+and it's the one people skip.
+
+The panel continuously polls the Keybus whether or not any keypad is attached, so
+clock activity is present on a healthy panel with nothing else connected.
+
+Meter on **DC volts**, **Yellow (clock) to Black**:
+
+| Reading | Meaning |
+|---|---|
+| Steady, unwavering ~12 V with no movement in the last digits | Suspicious — consistent with a halted CPU |
+| A reading that wobbles, drifts, or sits at some odd intermediate value | The line is pulsing. **The panel is clocking.** |
+
+A multimeter can't show you a waveform; it averages. That's exactly why a pulsing line
+gives an unstable or intermediate reading instead of a clean 12 V. The instability
+*is* the signal here.
+
+Repeat on **Green (data) to Black**. Data is quieter than clock — it carries traffic in
+bursts rather than continuously — so a steadier reading on Green is less alarming than
+a steady reading on Yellow.
+
+**With a scope or logic analyzer**, this becomes definitive: put a probe on Yellow,
+referenced to Black, and look for periodic bursts of clock pulses repeating roughly
+twice a second. Confirm the exact rate against your own capture rather than trusting
+a number from memory — what matters is *periodic bursts exist*, not their precise
+frequency.
+
+**Pass:** Yellow shows activity. Continue.
+
+**Stop:** 13.8 V present but Yellow rock-steady. The power supply works and the
+processor does not. That's usually the end of the line for a board this old — but do
+stage 5 first if you have a keypad, because it's a second opinion on the same question.
+
+---
+
+## Stage 5 — Keypad test (if you have one)
+
+If you have any DSC PowerSeries keypad, **this is a better diagnostic than the ESP32
+will ever be.** It exercises the full path — panel CPU, Keybus protocol, and
+bidirectional communication — and reports results in plain language.
+
+Power down. Wire the keypad's four leads to the matching Keybus terminals:
+
+```
+Keypad R ──► panel Red     (+12 V)
+Keypad B ──► panel Black   (ground)
+Keypad Y ──► panel Yellow  (clock)
+Keypad G ──► panel Green   (data)
+```
+
+Power up and watch.
+
+| What you see | Meaning |
+|---|---|
+| Backlight, zone lights, trouble light | **Panel is alive.** Skip to stage 6. |
+| Backlight only, no coherent display | Power reaches the keypad; Keybus comms are not working |
+| Completely dark | Check your four connections first, then suspect the panel |
+| Any display at all | The CPU is running — that alone is the answer to stage 4 |
+
+**Expect the trouble light to be on.** With no battery and no phone line, that's
+correct behavior, not a fault.
+
+Press `[*][2]` to list trouble conditions. On PowerSeries panels the codes are:
+
+| Code | Trouble |
+|---|---|
+| 1 | Service required (press `[1]` again for the sub-code — low/missing battery lives here) |
+| 2 | AC power loss |
+| 3 | Telephone line trouble |
+| 4 | Failure to communicate |
+| 5 | Zone fault |
+| 6 | Zone tamper |
+| 7 | Wireless device low battery |
+| 8 | Loss of time and date |
+
+For a panel in this state, expect **1** (no battery), **3** (no phone line), and **8**
+(clock lost on power-down). Those three are a *healthy* result — they're the panel
+correctly reporting its situation.
+
+### If the keypad works but you can't get into programming
+
+Your installer code may not be `5555`. See
+[`pc1555mx-programming.md`](pc1555mx-programming.md) — it covers the code candidates,
+the `Unlocker` sketch, and the hardware default jumper.
+
+Two things to know before you go down that road:
+
+- The `Unlocker` sketch **needs the write transistor** on GPIO 21. The read-only
+  divider in [`wiring.md`](wiring.md) won't do it — that circuit deliberately cannot
+  transmit.
+- If a previous installer enabled installer lockout (section `[990]`) and the code
+  isn't one you can guess, **the panel cannot be recovered in the field.** The hardware
+  default jumper does not clear lockout. This is the one failure mode with no path
+  forward, so establish it early rather than after hours of brute-forcing.
+
+---
+
+## Stage 6 — ESP32, raw Keybus read
+
+Only now. Stages 3 and 4 must have passed.
+
+Wire per [`wiring.md`](wiring.md) — clock to **GPIO 18**, data to **GPIO 19**, both
+through 33k/10k dividers.
+
+**The one thing that must be right:** ESP32 ground and panel Aux(−) must be tied
+together. The divider references against that shared ground. For bench work you can
+power the ESP32 from USB and connect *only* the grounds — the panel doesn't need to
+source any current for this to work.
+
+### Use KeybusReader, not the status sketch
+
+Flash the library's **`KeybusReader`** example first, not `src/status_serial.cpp`.
+
+KeybusReader dumps raw Keybus bytes. `status_serial.cpp` decodes those bytes into zone
+and arming state and **prints nothing if decoding fails** — which reintroduces exactly
+the ambiguity this whole document exists to avoid. Raw first, decoded second.
+
+| Serial output | Meaning |
+|---|---|
+| Repeating command bytes, panel status lines | **Working.** Go to stage 7. |
+| Garbage, inconsistent bytes, CRC errors | Wiring integrity — see below |
+| Nothing at all | See the narrowed list below |
+
+Because you've already passed stages 3 and 4, "nothing at all" now means one of only
+three things, not six:
+
+1. **Wiring** — divider values, or clock and data swapped
+2. **Wrong GPIO pins** in the sketch (must be 18 and 19 to match `wiring.md`)
+3. **Toolchain** — confirm `platformio.ini` still pins `espressif32@6.9.0`.
+   dscKeybusInterface does not compile against arduino-esp32 3.x
+   ([upstream #344](https://github.com/taligentx/dscKeybusInterface/issues/344)),
+   and a silent platform bump is an easy way to get a clean build that does nothing.
+
+For garbage or intermittent output, it's almost always mechanical: **solder every
+connection.** Breadboard contacts cause CRC errors on the Keybus, and this is the
+single most common cause of "it half works."
+
+---
+
+## Stage 7 — Decoded status, then the web page
+
+1. Flash `src/status_serial.cpp`. You should see zone, arming, and trouble state in
+   readable form.
+2. Trip a zone — open a door, or short the zone terminal to ground — and confirm the
+   change appears.
+3. Flash `src/web_status.cpp`, set your WiFi credentials, and load the page from
+   another device on the LAN.
+4. Read [`build-guide.html`](build-guide.html) for the illustrated permanent install.
+
+Once it's working, consider section `[370]` in the programming reference — setting
+swinger shutdown entries 1–3 to `000` stops the panel suppressing repeat zone events,
+which otherwise makes the interface go quiet after three alarms in one armed cycle.
+
+---
+
+## Triage summary
+
+| Symptom | Most likely cause | Go to |
+|---|---|---|
+| No AC at panel terminals | Transformer or outlet | Stage 2 |
+| AC present, 0 V on Keybus | Aux fuse/PTC, or panel supply | Stage 3 |
+| Dark on AC, alive with battery | Normal for some PowerSeries | Not a fault |
+| 13.8 V, Yellow rock-steady | Panel CPU not running | Stage 4 stop |
+| Keypad dark, 13.8 V present | Keypad wiring, or panel comms | Stage 5 |
+| Keypad lights, shows troubles 1/3/8 | **Healthy panel** | Stage 6 |
+| ESP32 silent, stages 3–4 passed | Wiring, pins, or platform version | Stage 6 |
+| ESP32 garbled / CRC errors | Breadboard contacts | Solder it |
+| Can't enter programming | Unknown installer code | `pc1555mx-programming.md` |
+
+## What usually fails on a 20-year-dormant panel
+
+Ranked by how often it's the actual problem:
+
+1. **The battery.** Universal. Twenty years guarantees it. Not a panel fault.
+2. **The transformer.** Common, cheap, easily mistaken for a dead board.
+3. **Corrosion from a vented battery.** The most common cause of genuine board death.
+4. **Electrolytic capacitors.** Dry out with age; can cause brownout-like symptoms.
+5. **Unknown installer code.** Not a hardware fault, but it can end the project —
+   especially with lockout set.
+
+The board itself, kept dry and not corroded, is fairly likely to still work. These
+panels are simple, conservatively designed, and were built to sit powered for decades.
+Age alone is not a strong reason to expect failure — moisture and battery leakage are.
+
+---
+
+## Measurement log
+
+```
+Date: ____________
+
+Stage 1  Visual
+  Battery condition ......................... ____________________
+  Corrosion near battery leads .............. ____________________
+  Capacitors ................................ ____________________
+  Other damage .............................. ____________________
+
+Stage 2  Transformer (disconnected from panel)
+  AC across leads ........................... __________ VAC
+
+Stage 3  Power-up, AC only
+  AC at panel terminals ..................... __________ VAC
+  Keybus Red to Black ....................... __________ VDC
+  Started without battery? .................. Y / N
+
+Stage 4  CPU
+  Yellow to Black ........................... __________ VDC
+  Steady or fluctuating? .................... ____________________
+  Green to Black ............................ __________ VDC
+  Scope: periodic bursts seen? .............. Y / N / n/a
+
+Stage 5  Keypad
+  Keypad model .............................. ____________________
+  Display ................................... ____________________
+  [*][2] trouble codes ...................... ____________________
+
+Stage 6  ESP32
+  KeybusReader output ....................... ____________________
+  platformio.ini platform ................... ____________________
+```
