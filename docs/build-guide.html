@@ -1,0 +1,682 @@
+<title>Keybus Bench Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+
+<style>
+:root{
+  --paper:#f1f3f1;
+  --card:#fafbfa;
+  --ink:#161a19;
+  --ink-2:#4a5350;
+  --ink-3:#767e7b;
+  --rule:#d6dbd8;
+  --rule-2:#e6eae7;
+  --lcd:#3f5350;
+  --lcd-bright:#5d7d78;
+  --lcd-wash:#e2e9e6;
+  --w-red:#c0392b;
+  --w-yel:#b8860b;
+  --w-grn:#2f7d4f;
+  --w-blk:#2b2f2e;
+  --danger:#a6301f;
+  --danger-wash:#fbe9e5;
+  --ok-wash:#e3ece5;
+  --shadow:0 1px 2px rgba(20,30,28,.06),0 6px 20px -12px rgba(20,30,28,.25);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --paper:#0e1211;
+    --card:#161b1a;
+    --ink:#e4e9e6;
+    --ink-2:#a3adaa;
+    --ink-3:#7a8481;
+    --rule:#2a312f;
+    --rule-2:#212726;
+    --lcd:#859c99;
+    --lcd-bright:#a3bbb7;
+    --lcd-wash:#1c2624;
+    --w-red:#e0705f;
+    --w-yel:#d9ab3c;
+    --w-grn:#5aab77;
+    --w-blk:#c3ccc9;
+    --danger:#e88a76;
+    --danger-wash:#2a1a16;
+    --ok-wash:#16241c;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px -12px rgba(0,0,0,.8);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0e1211;
+  --card:#161b1a;
+  --ink:#e4e9e6;
+  --ink-2:#a3adaa;
+  --ink-3:#7a8481;
+  --rule:#2a312f;
+  --rule-2:#212726;
+  --lcd:#859c99;
+  --lcd-bright:#a3bbb7;
+  --lcd-wash:#1c2624;
+  --w-red:#e0705f;
+  --w-yel:#d9ab3c;
+  --w-grn:#5aab77;
+  --w-blk:#c3ccc9;
+  --danger:#e88a76;
+  --danger-wash:#2a1a16;
+  --ok-wash:#16241c;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 6px 20px -12px rgba(0,0,0,.8);
+}
+
+*{box-sizing:border-box}
+body{
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"IBM Plex Sans",-apple-system,BlinkMacSystemFont,sans-serif;
+  font-size:16px;
+  line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+.shell{max-width:1080px;margin:0 auto;padding:0 24px 96px}
+
+/* ---------- masthead ---------- */
+.mast{padding:44px 0 32px;border-bottom:2px solid var(--ink)}
+.eyebrow{
+  font-family:"IBM Plex Mono",monospace;font-size:11px;font-weight:500;
+  letter-spacing:.18em;text-transform:uppercase;color:var(--lcd);margin:0 0 14px;
+}
+h1{
+  font-family:Archivo,sans-serif;font-weight:700;font-size:clamp(38px,7vw,64px);
+  line-height:1.02;letter-spacing:-.028em;margin:0 0 16px;text-wrap:balance;
+}
+.standfirst{font-size:19px;line-height:1.55;color:var(--ink-2);max-width:60ch;margin:0}
+.mast-meta{
+  display:flex;flex-wrap:wrap;gap:8px 28px;margin-top:26px;
+  font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-3);
+}
+.mast-meta b{color:var(--ink-2);font-weight:500}
+
+/* ---------- generic blocks ---------- */
+section{padding-top:52px}
+h2{
+  font-family:Archivo,sans-serif;font-weight:700;font-size:26px;letter-spacing:-.02em;
+  margin:0 0 14px;text-wrap:balance;
+}
+h3{
+  font-family:Archivo,sans-serif;font-weight:600;font-size:17px;letter-spacing:-.01em;
+  margin:26px 0 8px;
+}
+p{margin:0 0 14px;max-width:66ch}
+a{color:var(--lcd);text-underline-offset:3px}
+strong{font-weight:600}
+
+.lede{font-size:17px;color:var(--ink-2);max-width:64ch}
+
+/* ---------- steps ---------- */
+.step{
+  display:grid;grid-template-columns:66px minmax(0,1fr);gap:0 26px;
+  padding-top:46px;
+}
+.step + .step{margin-top:6px}
+.step-num{
+  font-family:Archivo,sans-serif;font-weight:700;font-size:40px;line-height:1;
+  color:var(--lcd);letter-spacing:-.04em;font-variant-numeric:tabular-nums;
+  padding-top:2px;
+}
+.step-num small{display:block;font-family:"IBM Plex Mono",monospace;font-size:10px;
+  font-weight:500;letter-spacing:.14em;color:var(--ink-3);margin-top:6px}
+.step-body{min-width:0}
+.step-title{
+  font-family:Archivo,sans-serif;font-weight:700;font-size:27px;letter-spacing:-.022em;
+  margin:0 0 4px;line-height:1.15;text-wrap:balance;
+}
+.step-why{font-size:14px;color:var(--ink-3);font-style:italic;margin:0 0 18px;max-width:60ch}
+
+@media(max-width:640px){
+  .step{grid-template-columns:1fr;gap:0}
+  .step-num{font-size:28px;margin-bottom:10px}
+  .step-num small{display:inline;margin-left:10px}
+}
+
+/* ---------- code ---------- */
+pre{
+  font-family:"IBM Plex Mono",monospace;font-size:13.5px;line-height:1.65;
+  background:var(--card);border:1px solid var(--rule);border-left:3px solid var(--lcd);
+  padding:14px 16px;overflow-x:auto;margin:0 0 16px;border-radius:2px;
+}
+pre .c{color:var(--ink-3)}
+pre .o{color:var(--lcd-bright)}
+code{font-family:"IBM Plex Mono",monospace;font-size:.9em;
+  background:var(--lcd-wash);padding:1px 5px;border-radius:2px}
+pre code{background:none;padding:0;font-size:inherit}
+
+/* ---------- callouts ---------- */
+.check,.warn{
+  border-radius:2px;padding:14px 18px;margin:0 0 18px;
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 14px;
+}
+.check{background:var(--ok-wash);border-left:3px solid var(--w-grn)}
+.warn{background:var(--danger-wash);border-left:3px solid var(--danger)}
+.tag{
+  font-family:"IBM Plex Mono",monospace;font-size:10px;font-weight:600;
+  letter-spacing:.15em;text-transform:uppercase;padding-top:4px;white-space:nowrap;
+}
+.check .tag{color:var(--w-grn)}
+.warn .tag{color:var(--danger)}
+.check p,.warn p{margin:0;font-size:14.5px;max-width:62ch;grid-column:2}
+.check p.tag,.warn p.tag{grid-column:1;margin:0}
+.check p + p,.warn p + p{margin-top:8px}
+.check p.tag + p,.warn p.tag + p{margin-top:0}
+.mono{font-family:"IBM Plex Mono",monospace}
+kbd{font-family:"IBM Plex Mono",monospace;font-size:.85em;background:var(--lcd-wash);
+  border:1px solid var(--rule);border-radius:3px;padding:1px 5px}
+
+/* ---------- figures ---------- */
+figure{margin:24px 0;padding:0}
+figure svg{display:block;width:100%;height:auto;max-width:100%}
+.figframe{
+  background:var(--card);border:1px solid var(--rule);border-radius:3px;
+  padding:22px 20px 16px;overflow-x:auto;
+}
+figcaption{
+  font-size:13px;color:var(--ink-3);margin-top:12px;line-height:1.5;max-width:64ch;
+}
+figcaption b{color:var(--ink-2);font-weight:600}
+
+/* ---------- tables ---------- */
+.tw{overflow-x:auto;margin:0 0 18px;border:1px solid var(--rule);border-radius:3px}
+table{border-collapse:collapse;width:100%;font-size:14px;background:var(--card)}
+th,td{text-align:left;padding:9px 14px;border-bottom:1px solid var(--rule-2);vertical-align:top}
+th{
+  font-family:"IBM Plex Mono",monospace;font-size:10.5px;font-weight:600;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3);
+  background:var(--lcd-wash);border-bottom:1px solid var(--rule);
+}
+tr:last-child td{border-bottom:none}
+td.mono,th.mono{font-family:"IBM Plex Mono",monospace;font-variant-numeric:tabular-nums}
+
+/* ---------- parts grid ---------- */
+.parts{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));
+  gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:3px;
+  overflow:hidden;margin:0 0 18px;
+}
+.part{background:var(--card);padding:14px 16px}
+.part b{
+  display:block;font-family:Archivo,sans-serif;font-size:15px;font-weight:600;
+  margin-bottom:2px;
+}
+.part span{font-size:13px;color:var(--ink-3);display:block;line-height:1.45}
+.part i{
+  font-family:"IBM Plex Mono",monospace;font-style:normal;font-size:11px;
+  color:var(--lcd);letter-spacing:.06em;
+}
+
+/* ---------- wire key ---------- */
+.wirekey{display:flex;flex-wrap:wrap;gap:10px 22px;margin:0 0 20px;padding:0;list-style:none}
+.wirekey li{display:flex;align-items:center;gap:9px;font-size:13.5px}
+.sw{width:26px;height:6px;border-radius:1px;flex:none}
+.wirekey code{background:none;padding:0;color:var(--ink-3);font-size:12px}
+
+hr.div{border:none;border-top:1px solid var(--rule);margin:56px 0 0}
+
+footer{
+  margin-top:64px;padding-top:22px;border-top:2px solid var(--ink);
+  font-size:13.5px;color:var(--ink-3);
+}
+footer p{max-width:66ch}
+
+@media(prefers-reduced-motion:no-preference){
+  a{transition:opacity .15s}
+}
+a:focus-visible,summary:focus-visible{outline:2px solid var(--lcd);outline-offset:3px}
+</style>
+
+<div class="shell">
+
+<header class="mast">
+  <p class="eyebrow">DSC PC1555MX · Power632 · ESP32 build</p>
+  <h1>Keybus Bench Log</h1>
+  <p class="standfirst">Nine stations from a bare ESP32 to a live panel monitor on your own network. Each one ends with something you can see, so you never carry a mistake forward into the next.</p>
+  <div class="mast-meta">
+    <span><b>Panel</b> &nbsp;DSC PC1555MX</span>
+    <span><b>Board</b> &nbsp;ESP32-WROOM-32</span>
+    <span><b>Host</b> &nbsp;macOS + PlatformIO</span>
+    <span><b>Bench time</b> &nbsp;~3 hours</span>
+  </div>
+</header>
+
+<section>
+  <h2>What you're actually building</h2>
+  <p class="lede">Before the first step, it helps to know why the ESP32 is in the middle of this at all — it isn't a cable, it's a translator.</p>
+
+  <figure>
+    <div class="figframe">
+      <svg viewBox="0 0 880 210" role="img" aria-label="Signal chain: the panel's 12.6-volt Keybus passes through a resistor divider to the ESP32, which decodes the proprietary protocol and sends plain text over USB to the Mac.">
+        <defs>
+          <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+
+        <!-- panel -->
+        <rect x="8" y="46" width="150" height="96" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <text x="83" y="80" text-anchor="middle" font-family="Archivo,sans-serif" font-size="15" font-weight="600" fill="currentColor">PC1555MX</text>
+        <text x="83" y="99" text-anchor="middle" font-size="11.5" fill="currentColor" opacity=".62">alarm panel</text>
+        <text x="83" y="120" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="var(--w-red)">12.6 V Keybus</text>
+
+        <!-- arrow 1 -->
+        <line x1="164" y1="94" x2="216" y2="94" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar)"/>
+        <text x="190" y="82" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="currentColor" opacity=".7">4 wires</text>
+
+        <!-- divider -->
+        <rect x="222" y="46" width="128" height="96" rx="3" fill="none" stroke="var(--lcd)" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <text x="286" y="80" text-anchor="middle" font-family="Archivo,sans-serif" font-size="14" font-weight="600" fill="currentColor">Divider</text>
+        <text x="286" y="99" text-anchor="middle" font-size="11.5" fill="currentColor" opacity=".62">33k + 10k</text>
+        <text x="286" y="120" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="var(--lcd)">you build this</text>
+
+        <!-- arrow 2 -->
+        <line x1="356" y1="94" x2="408" y2="94" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar)"/>
+        <text x="382" y="82" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="currentColor" opacity=".7">2.9 V</text>
+
+        <!-- esp32 -->
+        <rect x="414" y="34" width="176" height="120" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>
+        <text x="502" y="66" text-anchor="middle" font-family="Archivo,sans-serif" font-size="15" font-weight="600" fill="currentColor">ESP32</text>
+        <line x1="438" y1="78" x2="566" y2="78" stroke="currentColor" stroke-width="1" opacity=".3"/>
+        <text x="502" y="97" text-anchor="middle" font-size="11.5" fill="currentColor" opacity=".62">decodes the</text>
+        <text x="502" y="112" text-anchor="middle" font-size="11.5" fill="currentColor" opacity=".62">Keybus protocol</text>
+        <text x="502" y="134" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10.5" fill="var(--lcd)">interrupts + timers</text>
+
+        <!-- arrow 3 -->
+        <line x1="596" y1="94" x2="648" y2="94" stroke="currentColor" stroke-width="1.5" marker-end="url(#ar)"/>
+        <text x="622" y="82" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10" fill="currentColor" opacity=".7">USB</text>
+
+        <!-- mac -->
+        <rect x="654" y="46" width="150" height="96" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+        <text x="729" y="80" text-anchor="middle" font-family="Archivo,sans-serif" font-size="15" font-weight="600" fill="currentColor">Your Mac</text>
+        <text x="729" y="99" text-anchor="middle" font-size="11.5" fill="currentColor" opacity=".62">serial monitor</text>
+        <text x="729" y="120" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="var(--w-grn)">Zone opened: 1</text>
+
+        <!-- bracket note -->
+        <line x1="8" y1="176" x2="350" y2="176" stroke="var(--w-red)" stroke-width="1.2"/>
+        <line x1="8" y1="170" x2="8" y2="176" stroke="var(--w-red)" stroke-width="1.2"/>
+        <line x1="350" y1="170" x2="350" y2="176" stroke="var(--w-red)" stroke-width="1.2"/>
+        <text x="179" y="194" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10.5" fill="var(--w-red)">proprietary, 12.6 V — no USB adapter can read this</text>
+
+        <line x1="596" y1="176" x2="804" y2="176" stroke="var(--w-grn)" stroke-width="1.2"/>
+        <line x1="596" y1="170" x2="596" y2="176" stroke="var(--w-grn)" stroke-width="1.2"/>
+        <line x1="804" y1="170" x2="804" y2="176" stroke="var(--w-grn)" stroke-width="1.2"/>
+        <text x="700" y="194" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10.5" fill="var(--w-grn)">plain text, 3.3 V</text>
+      </svg>
+    </div>
+    <figcaption><b>Nothing on your Mac ever sees Keybus data.</b> The panel speaks a two-wire clock-and-data protocol at 12.6 volts where the data line can lag the clock by 160 microseconds. The ESP32 catches that with hardware interrupts and hands your Mac finished sentences. That's why there's no "USB-to-panel cable" — the translation is the whole job.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <h2>Before you start</h2>
+
+  <div class="warn">
+    <p class="tag">Read first</p>
+    <p><strong>If this panel is monitored, call the central station and put the account on test before you touch anything.</strong> Opening the can, cutting power, or a stray probe can trip an alarm and dispatch police to your house.</p>
+    <p><strong>Never connect or disconnect a Keybus wire while the panel is powered.</strong> Kill the AC transformer and unplug the backup battery first, every single time. This is the one rule that protects both the panel and your board.</p>
+  </div>
+
+  <h3>Lay these out before you begin</h3>
+  <div class="parts">
+    <div class="part"><b>ESP32 board</b><span>ELEGOO, USB-C</span><i>× 1 of your 3</i></div>
+    <div class="part"><b>33 kΩ resistors</b><span>the divider's top leg</span><i>× 2</i></div>
+    <div class="part"><b>10 kΩ resistors</b><span>the divider's bottom leg</span><i>× 2</i></div>
+    <div class="part"><b>Perfboard</b><span>smallest one that fits</span><i>× 1</i></div>
+    <div class="part"><b>Hookup wire</b><span>4 colors, ~3 ft each</span><i>red blk yel grn</i></div>
+    <div class="part"><b>Buck converter</b><span>LM2596 w/ voltmeter</span><i>step 7 only</i></div>
+    <div class="part"><b>Multimeter</b><span>yours</span><i>steps 3 &amp; 7</i></div>
+    <div class="part"><b>Soldering iron</b><span>yours</span><i>step 3</i></div>
+  </div>
+
+  <h3>Finding the right resistors in that 130-value kit</h3>
+  <p>The bags are labeled, so read the bag first. If a loose one gets away from you, the bands tell you what it is. Your kit is 1% metal film, which means five bands on a blue body.</p>
+
+  <figure>
+    <div class="figframe">
+      <svg viewBox="0 0 620 232" role="img" aria-label="Color band diagrams for 33 kilohm, 10 kilohm and 1 kilohm five-band metal film resistors.">
+        <!-- 33k -->
+        <g>
+          <line x1="16" y1="40" x2="196" y2="40" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="52" y="24" width="108" height="32" rx="14" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="64" y="24" width="8" height="32" fill="#e08a2e"/>
+          <rect x="80" y="24" width="8" height="32" fill="#e08a2e"/>
+          <rect x="96" y="24" width="8" height="32" fill="#2b2f2e"/>
+          <rect x="112" y="24" width="8" height="32" fill="#c0392b"/>
+          <rect x="140" y="24" width="8" height="32" fill="#8a6a3a"/>
+          <text x="212" y="37" font-family="Archivo,sans-serif" font-size="17" font-weight="700" fill="currentColor">33 kΩ</text>
+          <text x="212" y="53" font-family="IBM Plex Mono,monospace" font-size="10.5" fill="currentColor" opacity=".65">orange orange black red brown</text>
+          <text x="440" y="37" font-family="IBM Plex Mono,monospace" font-size="11.5" fill="var(--lcd)">× 2 — top leg</text>
+          <text x="440" y="53" font-size="11" fill="currentColor" opacity=".62">panel line → junction</text>
+        </g>
+        <!-- 10k -->
+        <g>
+          <line x1="16" y1="112" x2="196" y2="112" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="52" y="96" width="108" height="32" rx="14" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="64" y="96" width="8" height="32" fill="#8a6a3a"/>
+          <rect x="80" y="96" width="8" height="32" fill="#2b2f2e"/>
+          <rect x="96" y="96" width="8" height="32" fill="#2b2f2e"/>
+          <rect x="112" y="96" width="8" height="32" fill="#c0392b"/>
+          <rect x="140" y="96" width="8" height="32" fill="#8a6a3a"/>
+          <text x="212" y="109" font-family="Archivo,sans-serif" font-size="17" font-weight="700" fill="currentColor">10 kΩ</text>
+          <text x="212" y="125" font-family="IBM Plex Mono,monospace" font-size="10.5" fill="currentColor" opacity=".65">brown black black red brown</text>
+          <text x="440" y="109" font-family="IBM Plex Mono,monospace" font-size="11.5" fill="var(--lcd)">× 2 — bottom leg</text>
+          <text x="440" y="125" font-size="11" fill="currentColor" opacity=".62">junction → ground</text>
+        </g>
+        <!-- 1k -->
+        <g>
+          <line x1="16" y1="184" x2="196" y2="184" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="52" y="168" width="108" height="32" rx="14" fill="none" stroke="currentColor" stroke-width="1.5"/>
+          <rect x="64" y="168" width="8" height="32" fill="#8a6a3a"/>
+          <rect x="80" y="168" width="8" height="32" fill="#2b2f2e"/>
+          <rect x="96" y="168" width="8" height="32" fill="#2b2f2e"/>
+          <rect x="112" y="168" width="8" height="32" fill="#8a6a3a"/>
+          <rect x="140" y="168" width="8" height="32" fill="#8a6a3a"/>
+          <text x="212" y="181" font-family="Archivo,sans-serif" font-size="17" font-weight="700" fill="currentColor">1 kΩ</text>
+          <text x="212" y="197" font-family="IBM Plex Mono,monospace" font-size="10.5" fill="currentColor" opacity=".65">brown black black brown brown</text>
+          <text x="440" y="181" font-family="IBM Plex Mono,monospace" font-size="11.5" fill="currentColor" opacity=".5">× 1 — step 9 only</text>
+          <text x="440" y="197" font-size="11" fill="currentColor" opacity=".5">transistor base</text>
+        </g>
+        <text x="16" y="222" font-family="IBM Plex Mono,monospace" font-size="10" fill="currentColor" opacity=".5">Four-band equivalents: 33k = orange orange orange gold · 10k = brown black orange gold · 1k = brown black red gold</text>
+      </svg>
+    </div>
+    <figcaption><b>Measure before you solder.</b> Set your meter to resistance and check each one. Reading bands is error-prone under bench light, and a 3.3 kΩ where a 33 kΩ belongs puts about 9.7 volts into a 3.3-volt pin.</figcaption>
+  </figure>
+</section>
+
+<hr class="div">
+
+<section>
+  <h2>The build</h2>
+  <p class="lede">Nine stations. Do them in order — each one is arranged so that when something breaks, only the thing you just did can be responsible.</p>
+
+  <!-- STEP 1 -->
+  <div class="step">
+    <div class="step-num">1<small>MAC</small></div>
+    <div class="step-body">
+      <h3 class="step-title">Install the toolchain</h3>
+      <p class="step-why">No hardware yet. Get the software working while there's nothing physical to blame.</p>
+      <pre><code><span class="c"># PlatformIO builds and flashes the board</span>
+brew install platformio
+
+<span class="c"># your project lives here</span>
+cd ~/Documents/projects/personal/security
+ls</code></pre>
+      <p>You should see <code>platformio.ini</code>, <code>src/</code>, <code>include/</code> and <code>docs/</code>. If <code>brew</code> isn't found, install Homebrew first from brew.sh.</p>
+      <div class="check">
+        <p class="tag">Checkpoint</p>
+        <p><code>pio --version</code> prints a version number. That's all this step needs.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="step">
+    <div class="step-num">2<small>MAC</small></div>
+    <div class="step-body">
+      <h3 class="step-title">Flash a naked board</h3>
+      <p class="step-why">Nothing is wired to the panel. This proves the Mac can talk to the ESP32 before any hardware is in play.</p>
+      <p>Plug one ESP32 into your Mac with a USB-C cable. Then find it:</p>
+      <pre><code>ls /dev/cu.*</code></pre>
+      <p>Look for <code>/dev/cu.usbserial-0001</code> or similar. If nothing new appeared, the cable is charge-only — swap it. That's the single most common first-hour failure.</p>
+      <pre><code>pio run -e serial -t upload -t monitor</code></pre>
+      <p>First run downloads the ESP32 toolchain and takes a few minutes. Later runs take seconds.</p>
+      <div class="check">
+        <p class="tag">Checkpoint</p>
+        <p>The monitor prints <span class="mono"><code>DSC PC1555MX Keybus interface starting...</code></span> then <code>Online. Waiting for Keybus data.</code> and sits there. Silence after that is <em>correct</em> — nothing is connected yet.</p>
+        <p>Press <kbd>Ctrl+C</kbd> to exit the monitor.</p>
+      </div>
+      <p><strong>If upload fails with a timeout</strong>, hold the <code>BOOT</code> button on the board while the upload starts, release once it says "Connecting..." Some boards need the nudge.</p>
+    </div>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="step">
+    <div class="step-num">3<small>BENCH</small></div>
+    <div class="step-body">
+      <h3 class="step-title">Build the divider board</h3>
+      <p class="step-why">The panel's Keybus swings to 12.6 V. Your ESP32's pins die above about 3.6 V. Two resistors per line fix that.</p>
+
+      <figure>
+        <div class="figframe">
+          <svg viewBox="0 0 700 330" role="img" aria-label="Two identical voltage dividers. Each panel signal line passes through a 33 kilohm resistor to a junction that feeds an ESP32 pin, with a 10 kilohm resistor from that junction to ground.">
+            <!-- YELLOW channel -->
+            <text x="8" y="34" font-family="IBM Plex Mono,monospace" font-size="11" font-weight="600" fill="var(--w-yel)">YEL · CLOCK</text>
+            <circle cx="46" cy="66" r="5" fill="var(--w-yel)"/>
+            <text x="8" y="88" font-size="11" fill="currentColor" opacity=".6">panel</text>
+            <line x1="51" y1="66" x2="150" y2="66" stroke="var(--w-yel)" stroke-width="2"/>
+            <!-- 33k -->
+            <rect x="150" y="54" width="76" height="24" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <text x="188" y="70" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="12" fill="currentColor">33 kΩ</text>
+            <line x1="226" y1="66" x2="330" y2="66" stroke="currentColor" stroke-width="2"/>
+            <!-- junction -->
+            <circle cx="330" cy="66" r="4.5" fill="currentColor"/>
+            <text x="330" y="46" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="10.5" fill="var(--lcd)">junction</text>
+            <line x1="330" y1="66" x2="470" y2="66" stroke="currentColor" stroke-width="2" marker-end="url(#ar2)"/>
+            <text x="400" y="56" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="var(--lcd-bright)">2.93 V</text>
+            <!-- down leg -->
+            <line x1="330" y1="66" x2="330" y2="108" stroke="currentColor" stroke-width="2"/>
+            <rect x="306" y="108" width="48" height="26" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <text x="330" y="125" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="currentColor">10 kΩ</text>
+            <line x1="330" y1="134" x2="330" y2="160" stroke="currentColor" stroke-width="2"/>
+            <line x1="312" y1="160" x2="348" y2="160" stroke="currentColor" stroke-width="2.5"/>
+            <line x1="318" y1="166" x2="342" y2="166" stroke="currentColor" stroke-width="2"/>
+            <line x1="324" y1="172" x2="336" y2="172" stroke="currentColor" stroke-width="1.5"/>
+
+            <!-- GREEN channel -->
+            <text x="8" y="228" font-family="IBM Plex Mono,monospace" font-size="11" font-weight="600" fill="var(--w-grn)">GRN · DATA</text>
+            <circle cx="46" cy="260" r="5" fill="var(--w-grn)"/>
+            <text x="8" y="282" font-size="11" fill="currentColor" opacity=".6">panel</text>
+            <line x1="51" y1="260" x2="150" y2="260" stroke="var(--w-grn)" stroke-width="2"/>
+            <rect x="150" y="248" width="76" height="24" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <text x="188" y="264" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="12" fill="currentColor">33 kΩ</text>
+            <line x1="226" y1="260" x2="330" y2="260" stroke="currentColor" stroke-width="2"/>
+            <circle cx="330" cy="260" r="4.5" fill="currentColor"/>
+            <line x1="330" y1="260" x2="470" y2="260" stroke="currentColor" stroke-width="2" marker-end="url(#ar2)"/>
+            <text x="400" y="250" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="var(--lcd-bright)">2.93 V</text>
+            <line x1="330" y1="260" x2="330" y2="218" stroke="currentColor" stroke-width="2"/>
+            <rect x="306" y="192" width="48" height="26" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
+            <text x="330" y="209" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="currentColor">10 kΩ</text>
+            <line x1="330" y1="192" x2="330" y2="172" stroke="currentColor" stroke-width="2"/>
+
+            <defs>
+              <marker id="ar2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="currentColor"/>
+              </marker>
+            </defs>
+
+            <!-- ESP32 -->
+            <rect x="476" y="34" width="176" height="252" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>
+            <text x="564" y="150" text-anchor="middle" font-family="Archivo,sans-serif" font-size="17" font-weight="700" fill="currentColor">ESP32</text>
+            <text x="490" y="70" font-family="IBM Plex Mono,monospace" font-size="12" fill="var(--w-yel)">GPIO 18</text>
+            <text x="490" y="264" font-family="IBM Plex Mono,monospace" font-size="12" fill="var(--w-grn)">GPIO 19</text>
+            <text x="490" y="176" font-family="IBM Plex Mono,monospace" font-size="12" fill="currentColor" opacity=".7">GND</text>
+            <line x1="348" y1="166" x2="476" y2="166" stroke="currentColor" stroke-width="2"/>
+
+            <!-- BLK -->
+            <circle cx="46" cy="166" r="5" fill="var(--w-blk)"/>
+            <text x="8" y="150" font-family="IBM Plex Mono,monospace" font-size="11" font-weight="600" fill="var(--w-blk)">BLK · GND</text>
+            <line x1="51" y1="166" x2="312" y2="166" stroke="var(--w-blk)" stroke-width="2"/>
+
+            <text x="8" y="316" font-family="IBM Plex Mono,monospace" font-size="10" fill="currentColor" opacity=".55">12.6 V × 10 ÷ (33 + 10) = 2.93 V — safely under the 3.3 V rail, comfortably above logic-high</text>
+          </svg>
+        </div>
+        <figcaption><b>Two identical channels sharing one ground.</b> Build them on perfboard and solder every joint. The library's own troubleshooting guide puts loose connections at the top of the list — a breadboard here produces data that works for ten minutes and then throws CRC errors forever.</figcaption>
+      </figure>
+
+      <p>Solder a female header strip to the perfboard so the ESP32 plugs in rather than being soldered down permanently. You'll want that board back.</p>
+
+      <div class="check">
+        <p class="tag">Checkpoint</p>
+        <p>With nothing connected to the panel, put your meter on resistance and probe from each junction to ground: <strong>10 kΩ</strong>. Probe from each panel input to its junction: <strong>33 kΩ</strong>. Probe from either panel input to ground: <strong>43 kΩ</strong>. If any reading is wildly off, you have a solder bridge or a cold joint.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4 -->
+  <div class="step">
+    <div class="step-num">4<small>PANEL</small></div>
+    <div class="step-body">
+      <h3 class="step-title">Wire into the Keybus</h3>
+      <p class="step-why">Four terminals, three wires for now. Power stays off the entire time.</p>
+
+      <div class="warn">
+        <p class="tag">Power down</p>
+        <p>Unplug the AC transformer at the wall <em>and</em> disconnect one battery lead inside the can. Confirm the keypad is dark before you touch a terminal.</p>
+      </div>
+
+      <p>The PC1555MX's Keybus is four screw terminals on the board, silkscreened <code>RED</code>, <code>BLK</code>, <code>YEL</code>, <code>GRN</code> — the same four your keypad already uses. You're tapping them in parallel, which the bus is designed for.</p>
+
+      <ul class="wirekey">
+        <li><span class="sw" style="background:var(--w-red)"></span> <b>RED</b> &nbsp;<code>Aux + 12 V — leave off until step 7</code></li>
+        <li><span class="sw" style="background:var(--w-blk)"></span> <b>BLK</b> &nbsp;<code>ground — connect first</code></li>
+        <li><span class="sw" style="background:var(--w-yel)"></span> <b>YEL</b> &nbsp;<code>clock → 33k → GPIO 18</code></li>
+        <li><span class="sw" style="background:var(--w-grn)"></span> <b>GRN</b> &nbsp;<code>data → 33k → GPIO 19</code></li>
+      </ul>
+
+      <p><strong>Connect black first.</strong> Ground is the reference the divider measures against; without it the other two readings mean nothing. Then yellow, then green. Leave red alone — for now your board draws power from the Mac's USB, which keeps the panel's power budget out of the equation while you debug.</p>
+
+      <div class="check">
+        <p class="tag">Checkpoint</p>
+        <p>Three wires landed, red terminal untouched, no bare copper touching a neighboring terminal. Tug each wire gently — a screw terminal that lets go is a fault you'll chase for hours.</p>
+        <p>Now restore panel power: battery lead first, then AC.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5 -->
+  <div class="step">
+    <div class="step-num">5<small>MAC</small></div>
+    <div class="step-body">
+      <h3 class="step-title">First light</h3>
+      <p class="step-why">This is the moment the project either works or doesn't. Everything after it is refinement.</p>
+      <pre><code>pio run -e serial -t upload -t monitor</code></pre>
+      <div class="check">
+        <p class="tag">Checkpoint</p>
+        <p>Within a few seconds:</p>
+        <p><span class="mono"><code>Keybus connected</code><br><code>Partition 1: Ready</code><br><code>Panel version: 32</code></span></p>
+        <p>Now walk to a door with a contact on it and open it. You should see <code>Zone opened: 1</code> and, when you close it, <code>Zone restored: 1</code>. Note which zone number each door and window reports — you'll need that list in the next step.</p>
+      </div>
+      <p>If you see nothing, or a wall of garbage, jump to the troubleshooting table below. Don't proceed until this step is clean; every later problem gets ten times harder to diagnose on top of a flaky bus connection.</p>
+    </div>
+  </div>
+
+  <!-- STEP 6 -->
+  <div class="step">
+    <div class="step-num">6<small>MAC</small></div>
+    <div class="step-body">
+      <h3 class="step-title">Put it on the network</h3>
+      <p class="step-why">Same decoding, different output. Now it's a page anyone in the house can open.</p>
+      <pre><code>cp include/secrets.h.example include/secrets.h
+open -e include/secrets.h</code></pre>
+      <p>Fill in your WiFi name and password. Then name your zones using the numbers you noted in step 5 — open <code>src/web_status.cpp</code> and edit the <code>zoneNames</code> list near the top:</p>
+      <pre><code>const char* zoneNames[ZONE_COUNT] = {
+  <span class="o">"Front Door"</span>, <span class="o">"Back Door"</span>, <span class="o">"Kitchen Window"</span>, <span class="o">"Garage"</span>,
+  <span class="o">"Hallway Motion"</span>, <span class="o">"Living Room"</span>, <span class="o">"Zone 7"</span>, <span class="o">"Zone 8"</span>
+};</code></pre>
+      <pre><code>pio run -e web -t upload -t monitor</code></pre>
+      <div class="check">
+        <p class="tag">Checkpoint</p>
+        <p>The monitor prints an IP address. Open <code>http://dsc.local/</code> in Safari — or that IP directly if mDNS is unreliable on your network. You get live arming state, every zone by name, AC power, battery, and the panel's own clock, refreshing every 1.5 seconds.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 7 -->
+  <div class="step">
+    <div class="step-num">7<small>PANEL</small></div>
+    <div class="step-body">
+      <h3 class="step-title">Cut the USB cord</h3>
+      <p class="step-why">Now the panel powers the board, so it keeps running through a blackout on the panel's battery — which is rather the point of a burglar alarm.</p>
+
+      <div class="warn">
+        <p class="tag">Set the voltage first</p>
+        <p><strong>Set the buck converter to 5.0 V before it ever touches the ESP32.</strong> These modules ship at whatever the last person left them at, often 12 V or more, which will kill your board instantly. Feed its input from the panel's RED and BLK, put your meter on the output, turn the tiny brass screw until the display reads 5.0, <em>then</em> power down and connect the output.</p>
+      </div>
+
+      <p>Once it's set: panel power off, then <code>RED</code> → buck <code>IN+</code>, <code>BLK</code> → buck <code>IN−</code>, buck <code>OUT+</code> → ESP32 <code>5V</code> (sometimes marked <code>VIN</code>), buck <code>OUT−</code> → ESP32 <code>GND</code>. Restore power.</p>
+
+      <div class="check">
+        <p class="tag">Checkpoint</p>
+        <p>Unplug the USB cable entirely. The web page stays live. Mount the board and perfboard in the Zulkit box, run the four wires through a knockout, and close it up.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 8 -->
+  <div class="step">
+    <div class="step-num">8<small>KEYPAD</small></div>
+    <div class="step-body">
+      <h3 class="step-title">One change at the keypad</h3>
+      <p class="step-why">The panel ships with a setting that will quietly hide alarms from your new monitor.</p>
+      <p>Swinger shutdown stops the panel reporting a zone after three alarm events in one armed cycle. It exists so a faulty contact doesn't spam a monitoring service — but it blinds your interface too. Section <code>[370]</code> also holds a 30-minute delay before AC power loss is reported.</p>
+      <p>At your physical keypad, key:</p>
+      <pre><code>[*] [8] [5555]        <span class="c">← installer code, 5555 is the default</span>
+370
+000 000 000 000 000
+[#] [#]</code></pre>
+      <p>That's the three swinger-shutdown counters and the transmission delay set to zero, then AC-failure reporting set to immediate. Press <code>[#]</code> to leave the remaining five entries alone.</p>
+      <div class="check">
+        <p class="tag">Checkpoint</p>
+        <p>Trip a zone four times in one armed cycle. All four show up on your web page.</p>
+      </div>
+      <p>Full section reference — zone definitions, entry delays, attributes — is in <code>docs/pc1555mx-programming.md</code>.</p>
+    </div>
+  </div>
+
+  <!-- STEP 9 -->
+  <div class="step">
+    <div class="step-num">9<small>OPTIONAL</small></div>
+    <div class="step-body">
+      <h3 class="step-title">Talking back</h3>
+      <p class="step-why">Everything so far is read-only. One transistor turns the board into a keypad.</p>
+      <p>Writing to the Keybus means pulling the green data line low on cue, which the ESP32 can't do through a resistor divider. A 2N3904 does it: <code>GPIO 21</code> → 1 kΩ → transistor <strong>base</strong>, <strong>emitter</strong> → GND, <strong>collector</strong> → the green line.</p>
+      <p>Then uncomment one line near the top of <code>src/web_status.cpp</code>:</p>
+      <pre><code><span class="c">// #define ENABLE_VIRTUAL_KEYPAD</span>   ← delete the two slashes</code></pre>
+      <div class="warn">
+        <p class="tag">Think about this one</p>
+        <p>The web page has no password. Enabling the keypad means anything on your network can disarm your house. Reasonable answers: leave it read-only, put the board on an IoT VLAN, or add HTTP basic auth. Deciding "later" is the same as choosing the first option, which is fine — just choose it on purpose.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="div">
+
+<section>
+  <h2>When it doesn't work</h2>
+  <p class="lede">Sorted by how often each one is actually the cause.</p>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Symptom</th><th>Most likely cause</th><th>Fix</th></tr></thead>
+      <tbody>
+        <tr><td>Board never appears in <span class="mono">ls /dev/cu.*</span></td><td>Charge-only USB cable</td><td>Try another cable. This is the #1 first-hour failure.</td></tr>
+        <tr><td>Nothing at all after <span class="mono">Online. Waiting…</span></td><td>Ground not connected, or yellow and green swapped</td><td>Check BLK lands on ESP32 GND. Verify YEL→GPIO 18, GRN→GPIO 19.</td></tr>
+        <tr><td>Garbage characters, CRC errors</td><td>A solderless or cold joint</td><td>Reflow every joint on the divider. Remove any breadboard.</td></tr>
+        <tr><td>Works, then drops out after minutes or hours</td><td>Loose screw terminal or intermittent crimp</td><td>Re-seat the panel terminals. Solid-core wire, no stray strands.</td></tr>
+        <tr><td>Upload fails, "Failed to connect"</td><td>Board not in bootloader mode</td><td>Hold <span class="mono">BOOT</span> during upload, release at "Connecting…"</td></tr>
+        <tr><td>Compile errors about <span class="mono">timerBegin</span></td><td>ESP32 core got upgraded past 2.x</td><td>Confirm <span class="mono">platformio.ini</span> still pins <span class="mono">espressif32@6.9.0</span>.</td></tr>
+        <tr><td><span class="mono">dsc.local</span> won't resolve</td><td>mDNS blocked on your network</td><td>Use the IP printed on serial. Reserve it in your router's DHCP.</td></tr>
+        <tr><td>Zones show open that are closed</td><td>Zone numbering doesn't match your labels</td><td>Re-walk each opening with the serial monitor, fix <span class="mono">zoneNames</span>.</td></tr>
+        <tr><td>Alarms stop appearing after a few trips</td><td>Swinger shutdown still enabled</td><td>Do step 8.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>Where to go next</h2>
+  <p>Once this is running steadily for a week, the interesting doors are: <strong>Home Assistant</strong> via the library's MQTT examples; <strong>Dilbert66's ESPHome fork</strong>, which tracks the current ESP32 core and adds zone-expander emulation up to 64 zones plus a full LCD-style programming interface; or <strong>push notifications</strong> — the library ships working examples for Pushover, Telegram, and plain email.</p>
+  <p>Your local files: <code>README.md</code> for the toolchain notes and alternatives, <code>docs/wiring.md</code> for the parts list and divider details, <code>docs/pc1555mx-programming.md</code> for the complete installer-programming reference.</p>
+</section>
+
+<footer>
+  <p>Built on <a href="https://github.com/taligentx/dscKeybusInterface">taligentx/dscKeybusInterface</a>, which lists the PC1555MX among its tested panels. Section numbers verified against the DSC PC1555 installation manual, Section 6 programming worksheets.</p>
+  <p style="margin-top:10px">Work on a monitored system only after putting the account on test. Never connect or disconnect Keybus wiring with the panel powered.</p>
+</footer>
+
+</div>
