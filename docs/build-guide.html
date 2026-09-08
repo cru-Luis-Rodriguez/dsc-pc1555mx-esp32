@@ -234,11 +234,11 @@ a:focus-visible,summary:focus-visible{outline:2px solid var(--lcd);outline-offse
 <div class="shell">
 
 <header class="mast">
-  <p class="eyebrow">DSC PC1555MX · Power632 · ESP32 build</p>
+  <p class="eyebrow">DSC PC1555 · Power632 · ESP32 build</p>
   <h1>Keybus Bench Log</h1>
   <p class="standfirst">Nine stations from a bare ESP32 to a live panel monitor on your own network. Each one ends with something you can see, so you never carry a mistake forward into the next.</p>
   <div class="mast-meta">
-    <span><b>Panel</b> &nbsp;DSC PC1555MX</span>
+    <span><b>Panel</b> &nbsp;DSC PC1555</span>
     <span><b>Board</b> &nbsp;ESP32-WROOM-32</span>
     <span><b>Host</b> &nbsp;macOS + PlatformIO</span>
     <span><b>Bench time</b> &nbsp;~3 hours</span>
@@ -260,7 +260,7 @@ a:focus-visible,summary:focus-visible{outline:2px solid var(--lcd);outline-offse
 
         <!-- panel -->
         <rect x="8" y="46" width="150" height="96" rx="3" fill="none" stroke="currentColor" stroke-width="1.5"/>
-        <text x="83" y="80" text-anchor="middle" font-family="Archivo,sans-serif" font-size="15" font-weight="600" fill="currentColor">PC1555MX</text>
+        <text x="83" y="80" text-anchor="middle" font-family="Archivo,sans-serif" font-size="15" font-weight="600" fill="currentColor">PC1555</text>
         <text x="83" y="99" text-anchor="middle" font-size="11.5" fill="currentColor" opacity=".62">alarm panel</text>
         <text x="83" y="120" text-anchor="middle" font-family="IBM Plex Mono,monospace" font-size="11" fill="var(--w-red)">12.6 V Keybus</text>
 
@@ -427,7 +427,7 @@ ls</code></pre>
       <p>First run downloads the ESP32 toolchain and takes a few minutes. Later runs take seconds.</p>
       <div class="check">
         <p class="tag">Checkpoint</p>
-        <p>The monitor prints <span class="mono"><code>DSC PC1555MX Keybus interface starting...</code></span> then <code>Online. Waiting for Keybus data.</code> and sits there. Silence after that is <em>correct</em> — nothing is connected yet.</p>
+        <p>The monitor prints <span class="mono"><code>DSC PC1555 Keybus interface starting...</code></span> then <code>Online. Waiting for Keybus data.</code> and sits there. Silence after that is <em>correct</em> — nothing is connected yet.</p>
         <p>Press <kbd>Ctrl+C</kbd> to exit the monitor.</p>
       </div>
       <p><strong>If upload fails with a timeout</strong>, hold the <code>BOOT</code> button on the board while the upload starts, release once it says "Connecting..." Some boards need the nudge.</p>
@@ -529,7 +529,7 @@ ls</code></pre>
         <p>Unplug the AC transformer at the wall <em>and</em> disconnect one battery lead inside the can. Confirm the keypad is dark before you touch a terminal.</p>
       </div>
 
-      <p>The PC1555MX's Keybus is four screw terminals on the board, silkscreened <code>RED</code>, <code>BLK</code>, <code>YEL</code>, <code>GRN</code> — the same four your keypad already uses. You're tapping them in parallel, which the bus is designed for.</p>
+      <p>The PC1555's Keybus is four screw terminals on the board, silkscreened <code>RED</code>, <code>BLK</code>, <code>YEL</code>, <code>GRN</code> — the same four your keypad already uses. You're tapping them in parallel, which the bus is designed for.</p>
 
       <ul class="wirekey">
         <li><span class="sw" style="background:var(--w-red)"></span> <b>RED</b> &nbsp;<code>Aux + 12 V — leave off until step 7</code></li>
@@ -624,7 +624,7 @@ open -e include/secrets.h</code></pre>
         <p class="tag">Checkpoint</p>
         <p>Trip a zone four times in one armed cycle. All four show up on your web page.</p>
       </div>
-      <p>Full section reference — zone definitions, entry delays, attributes — is in <code>docs/pc1555mx-programming.md</code>.</p>
+      <p>Full section reference — zone definitions, entry delays, attributes — is in <code>docs/pc1555-programming.md</code>.</p>
     </div>
   </div>
 
@@ -671,11 +671,11 @@ open -e include/secrets.h</code></pre>
 <section>
   <h2>Where to go next</h2>
   <p>Once this is running steadily for a week, the interesting doors are: <strong>Home Assistant</strong> via the library's MQTT examples; <strong>Dilbert66's ESPHome fork</strong>, which tracks the current ESP32 core and adds zone-expander emulation up to 64 zones plus a full LCD-style programming interface; or <strong>push notifications</strong> — the library ships working examples for Pushover, Telegram, and plain email.</p>
-  <p>Your local files: <code>README.md</code> for the toolchain notes and alternatives, <code>docs/wiring.md</code> for the parts list and divider details, <code>docs/pc1555mx-programming.md</code> for the complete installer-programming reference.</p>
+  <p>Your local files: <code>README.md</code> for the toolchain notes and alternatives, <code>docs/wiring.md</code> for the parts list and divider details, <code>docs/pc1555-programming.md</code> for the complete installer-programming reference.</p>
 </section>
 
 <footer>
-  <p>Built on <a href="https://github.com/taligentx/dscKeybusInterface">taligentx/dscKeybusInterface</a>, which lists the PC1555MX among its tested panels. Section numbers verified against the DSC PC1555 installation manual, Section 6 programming worksheets.</p>
+  <p>Built on <a href="https://github.com/taligentx/dscKeybusInterface">taligentx/dscKeybusInterface</a>, which supports all DSC PowerSeries panels (the PC1555MX sibling is on its tested list). Section numbers verified against the DSC PC1555 installation manual, Section 6 programming worksheets.</p>
   <p style="margin-top:10px">Work on a monitored system only after putting the account on test. Never connect or disconnect Keybus wiring with the panel powered.</p>
 </footer>
 
