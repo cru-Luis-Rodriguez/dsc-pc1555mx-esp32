@@ -292,10 +292,32 @@ option states as lit/unlit zone LEDs, with no prompt telling you where you are. 
 mis-keyed digit and you've silently changed something.
 
 If you intend to touch programming at all — including the section `[370]` change this
-project wants — a used **PK5500** or **LCD5511** LCD keypad is worth the ~$25–40 on
-eBay. It gives you text prompts and turns a blind bit-flipping exercise into something
-readable. Wire it to the same four Keybus terminals; PowerSeries panels support
-multiple keypads on the bus simultaneously, so you can leave the PC5508ZT in place.
+project wants — a full-message LCD keypad turns blind bit-flipping into something
+readable.
+
+**The correct part for this panel is the `LCD5500Z`.**
+
+> ⚠️ **Do not buy a PK5500, PK5501, PK5508, PK5516 or LCD5511.** Those are the *later*
+> PowerSeries generation, for the PC1616 / PC1832 / PC1864. They are **not compatible
+> with the PC1555**, and the PK5500 is unfortunately the one that's most prominently
+> stocked on Amazon. The `PC1555RKZ` also sold there is an 8-zone *LED* keypad — no
+> upgrade over the PC5508ZT already on the wall.
+
+| | |
+|---|---|
+| Part | `LCD5500Z` — 64-zone programmable alphanumeric LCD |
+| Requires | PC1555 **v3 or higher** — this panel is **V3.26** ✅ |
+| Where | eBay and alarm specialty retailers; discontinued, so used / new-old-stock |
+| Not on | Amazon, reliably — Amazon carries the incompatible PK-series instead |
+
+Wire it to the same four Keybus terminals. PowerSeries panels support multiple keypads
+on the bus simultaneously, so the PC5508ZT can stay in place.
+
+**Consider skipping it.** Nothing about reading panel status over the Keybus needs
+programming access — `[370]` is a refinement, not a requirement. And a newly added
+keypad must itself be enrolled to a partition slot with supervision re-enabled, which
+is programming, so it's partly chicken-and-egg. Confirm the panel is alive first, then
+decide whether you care.
 
 ### If the keypad works but you can't get into programming
 
