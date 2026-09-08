@@ -430,6 +430,51 @@ Age alone is not a strong reason to expect failure — moisture and battery leak
 
 ---
 
+## Upgrade paths — decision record
+
+Two hard constraints shape every option:
+
+1. **PowerSeries NEO (HS2016/HS2032/HS2064/HS2128) is unusable for this project.** NEO
+   replaced the Keybus with an *encrypted* Corbus. `dscKeybusInterface` cannot support
+   it and says so. Buying NEO means buying the newest DSC hardware and losing the whole
+   reason for the ESP32.
+2. **PC1616 / PC1832 / PC1864 are discontinued** — DSC ended them 31 March 2022, "while
+   quantities last." Secondary market only; a PC1832 V4.6 was listed at ~$230.
+
+| Option | Cost | Keeps this project? | Verdict |
+|---|---|---|---|
+| 1. Keep PC1555 + ESP32 | ~$50–70 parts + $25 battery | Yes, as designed | **Do this if the board works** |
+| 2. Newer PowerSeries board | ~$150–230, +$60–90 for a PK5500 | Yes; on the tested list | **No** — premium for 2022-EOL hardware |
+| 3. PowerSeries NEO | New retail | **No** — encrypted Corbus | **No** |
+| 4. Konnected (ESP32 + ESPHome) | Kit, on Amazon | Replaces it | **Do this if the board is dead** |
+| 5. DIY — ESP32 reads zone loops direct | ~$20–30 | Replaces it | Viable; option 4 with more work |
+
+### Decision rule
+
+**Board works → option 1. Board dead → option 4. Never option 2 or 3.**
+
+Supporting reasoning:
+
+- **Option 1's parts aren't stranded.** Konnected *is* an ESP32 running ESPHome, so the
+  ESP32, resistors, buck converter and perfboard carry forward if you change direction
+  later. Only the battery is DSC-specific, and every DSC path needs it.
+- **A working panel is free alarm behavior.** Siren driving, entry/exit delays and
+  arming logic already exist in firmware. Keeping a live board preserves the option to
+  want a real alarm later at no cost — which is what you want while undecided.
+- **"Modern integration" is not a reason to leave DSC.** `dscKeybusInterface` ships
+  Home Assistant and MQTT examples, so HA entities, automations and a local dashboard
+  are available on the 2006 board for $0 extra.
+
+### What none of this is
+
+No path here is a *security system*: no supervised communications, no central-station
+monitoring, no UL listing, no tamper or line-cut response. A working PC1555 with a
+siren gets closest. If the actual goal is protecting the house rather than telemetry
+and automation, the answer is a monitored system — which means a subscription, and a
+different set of trade-offs than this repo is built around.
+
+---
+
 ## Measurement log
 
 ```
