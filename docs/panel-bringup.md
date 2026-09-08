@@ -45,8 +45,16 @@ The terminal strip reads `AC AC | ±AUX | +BELL− | RED BLK YEL GRN | 1 PGM 2 |
 and **field wiring is still connected on all of it** — including all four Keybus
 conductors. That means:
 
-- **A keypad is still wired in.** Stage 5, the best diagnostic here, is available to
-  you immediately at no cost. Do it.
+- **A keypad is still wired in** — a **PC5508ZT**, the 8-zone *LED* PowerSeries keypad
+  (CE / RCM `N11427` international variant). Stage 5, the best diagnostic here, is
+  available to you immediately at no cost. Do it.
+  - Keypad-side wiring confirmed correct from photos: `Z` empty, `G`→green, `Y`→yellow,
+    `B`→black, `R`→red. The `Z` terminal is the keypad zone input and is unused, so
+    only the panel's onboard zones are in play.
+  - Keypad PCB is in **excellent** condition — bright solder joints, no corrosion, no
+    heat damage. Better preserved than the 2006 date would suggest.
+  - It's an **LED** keypad, not LCD. That's ideal for go/no-go testing and painful for
+    programming — see stage 5.
 - **AUX and BELL have loads on them** — motions, sirens, whatever was installed. A
   shorted 20-year-old siren or a water-damaged motion will drag the supply down and
   make a perfectly healthy panel read as dead. Stage 3 has been amended accordingly.
@@ -264,6 +272,30 @@ Press `[*][2]` to list trouble conditions. On PowerSeries panels the codes are:
 For a panel in this state, expect **1** (no battery), **3** (no phone line), and **8**
 (clock lost on power-down). Those three are a *healthy* result — they're the panel
 correctly reporting its situation.
+
+### Reading trouble codes on the PC5508ZT (LED keypad)
+
+On an LED keypad there is no text display, so `[*][2]` reports troubles by **lighting
+the numbered zone LEDs 1–8** across the top. The zone LED that lights *is* the trouble
+code in the table above — zone light 1 means "service required," zone light 3 means
+"telephone line trouble," and so on. Multiple lights mean multiple active troubles.
+Press `[#]` to exit.
+
+So on first power-up, a healthy panel should light **zone LEDs 1, 3 and 8** under
+`[*][2]`, with the Trouble LED on. That's the outcome you want.
+
+### If you plan to reprogram: get an LCD keypad
+
+The PC5508ZT is fine for diagnostics and daily use, but **installer programming on an
+LED keypad is genuinely unpleasant** — you key section numbers blind and read back
+option states as lit/unlit zone LEDs, with no prompt telling you where you are. One
+mis-keyed digit and you've silently changed something.
+
+If you intend to touch programming at all — including the section `[370]` change this
+project wants — a used **PK5500** or **LCD5511** LCD keypad is worth the ~$25–40 on
+eBay. It gives you text prompts and turns a blind bit-flipping exercise into something
+readable. Wire it to the same four Keybus terminals; PowerSeries panels support
+multiple keypads on the bus simultaneously, so you can leave the PC5508ZT in place.
 
 ### If the keypad works but you can't get into programming
 
