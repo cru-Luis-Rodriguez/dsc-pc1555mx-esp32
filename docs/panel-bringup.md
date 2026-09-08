@@ -221,6 +221,10 @@ the input to every later decision.
 A dead transformer mimics a dead panel exactly, and it's the cheaper failure. Rule it
 out before you blame the board.
 
+The probe positions for stages 2–5 in one picture:
+
+![Probe map: stage 2 measures AC across the disconnected transformer leads expecting 16–19 VAC; stage 3 measures DC red-probe-on-RED black-on-BLK expecting 12.6–14 V; stage 4 moves the red probe to YEL where a wobbling reading means the CPU is clocking; stage 5 wires the keypad R B Y G to RED BLK YEL GRN](img/bringup-probe-points.svg)
+
 **Uses procedure [P2 — AC volts](multimeter-basics.md#p2--measuring-ac-volts).**
 
 1. **Disconnect both transformer leads from the panel's AC terminals.** Testing it
@@ -352,14 +356,15 @@ If you have any DSC PowerSeries keypad, **this is a better diagnostic than the E
 will ever be.** It exercises the full path — panel CPU, Keybus protocol, and
 bidirectional communication — and reports results in plain language.
 
-Power down. Wire the keypad's four leads to the matching Keybus terminals:
+Power down. Wire the keypad's four leads to the matching Keybus terminals — colors
+map one-to-one (see the probe-map diagram in stage 2):
 
-```
-Keypad R ──► panel Red     (+12 V)
-Keypad B ──► panel Black   (ground)
-Keypad Y ──► panel Yellow  (clock)
-Keypad G ──► panel Green   (data)
-```
+| Keypad | Panel | Carries |
+|---|---|---|
+| `R` | Red | +12 V |
+| `B` | Black | ground |
+| `Y` | Yellow | clock |
+| `G` | Green | data |
 
 Power up and watch.
 

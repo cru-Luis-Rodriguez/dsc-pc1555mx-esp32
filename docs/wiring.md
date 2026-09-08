@@ -19,24 +19,15 @@ its logic-high threshold.
 
 ## Connections
 
-```
-DSC Aux(+) (red)  ──► LM2596 buck converter IN+ ──► OUT+ set to 5.0 V ──► ESP32 5V / VIN pin
-DSC Aux(−) (black) ─┬─► buck converter IN− and OUT− (common)
-                    └─► ESP32 GND
+![Full wiring diagram: panel AUX through the LM2596 buck to ESP32 VIN; Yellow and Green each through a 33k/10k divider into GPIO 18 and 19; Black to ESP32 ground; optional 2N3904 from GPIO 21 pulling the Green data line low](img/keybus-esp32.svg)
 
-                              ┌── ESP32 GPIO 18   (dscClockPin)
-DSC Yellow (clock) ── 33k ────┤
-                              └── 10k ── GND
-
-                              ┌── ESP32 GPIO 19   (dscReadPin)
-DSC Green (data) ──┬── 33k ───┤
-                   │          └── 10k ── GND
-                   │
-                   │   [ optional virtual keypad ]
-                   └── NPN collector (2N3904)
-                       NPN emitter ── GND
-                       NPN base ── 1k ── ESP32 GPIO 21  (dscWritePin)
-```
+| From | Via | To |
+|---|---|---|
+| Aux(+) | LM2596 buck, OUT set to **5.0 V** | ESP32 5V / VIN |
+| Aux(−) | — | buck IN−/OUT− and ESP32 GND (common) |
+| Yellow (clock) | 33 kΩ series, 10 kΩ to GND at the junction | GPIO 18 (`dscClockPin`) |
+| Green (data) | 33 kΩ series, 10 kΩ to GND at the junction | GPIO 19 (`dscReadPin`) |
+| GPIO 21 (`dscWritePin`) | 1 kΩ into 2N3904 base; emitter GND; collector to Green | *(optional, virtual keypad only)* |
 
 Set the buck converter to **5.0 V with a multimeter before connecting the ESP32**.
 Many LM2596 modules ship at 12 V+ out of the box and will destroy the board.

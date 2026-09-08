@@ -1,0 +1,90 @@
+<svg viewBox="0 0 880 560" xmlns="http://www.w3.org/2000/svg" role="img"
+     aria-label="Where the multimeter probes go during bring-up. Stage 2: transformer disconnected from the panel, AC volts across its two low-voltage leads, expect 16 to 19 volts AC. Stage 3: DC volts, red probe on Keybus RED, black probe on BLK, expect 12.6 to 14 volts. Stage 4: DC volts, red probe moves to YEL, black stays on BLK, a wobbling reading means the CPU is clocking. Stage 5: keypad R B Y G wires to panel RED BLK YEL GRN.">
+  <style>
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .sans { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+    .ink  { fill: #2b2f2e; }
+    .dim  { fill: #6d7a76; }
+  </style>
+
+  <rect x="0" y="0" width="880" height="560" rx="8" fill="#f7f6f3" stroke="#d8d5cd"/>
+  <text x="24" y="34" class="sans ink" font-size="16" font-weight="700">Bring-up — where the probes go</text>
+
+  <!-- ================= STAGE 2 (left, transformer alone) ================= -->
+  <rect x="24" y="70" width="200" height="210" rx="6" fill="#eeece7" stroke="#d8d5cd"/>
+  <text x="40" y="96" class="sans ink" font-size="12" font-weight="700">Stage 2 · transformer</text>
+  <text x="40" y="112" class="mono dim" font-size="9.5">disconnected from the panel</text>
+  <rect x="60" y="130" width="120" height="56" rx="4" fill="#fff" stroke="#2b2f2e" stroke-width="1.5"/>
+  <text x="120" y="153" text-anchor="middle" class="sans ink" font-size="11" font-weight="700">16.5 VAC</text>
+  <text x="120" y="169" text-anchor="middle" class="mono dim" font-size="9.5">plugged into wall</text>
+  <path d="M90,186 V216" fill="none" stroke="#2b2f2e" stroke-width="2"/>
+  <path d="M150,186 V216" fill="none" stroke="#2b2f2e" stroke-width="2"/>
+  <circle cx="90" cy="222" r="6" fill="none" stroke="#c0392b" stroke-width="2.5"/>
+  <circle cx="150" cy="222" r="6" fill="none" stroke="#2b2f2e" stroke-width="2.5"/>
+  <text x="120" y="250" text-anchor="middle" class="mono ink" font-size="10.5" font-weight="600">V~ · range 200</text>
+  <text x="120" y="266" text-anchor="middle" class="mono" font-size="10.5" fill="#3e8e5a" font-weight="600">expect 16–19 VAC</text>
+
+  <!-- ================= TERMINAL STRIP ================= -->
+  <rect x="250" y="230" width="546" height="60" rx="4" fill="#eeece7" stroke="#2b2f2e" stroke-width="1.5"/>
+  <text x="262" y="222" class="mono dim" font-size="9.5">PC1555 terminal strip (Keybus section)</text>
+
+  <circle cx="580" cy="260" r="7" fill="#c0392b"/>
+  <text x="580" y="308" text-anchor="middle" class="mono" font-size="10.5" font-weight="600" fill="#c0392b">RED</text>
+  <circle cx="640" cy="260" r="7" fill="#2b2f2e"/>
+  <text x="640" y="308" text-anchor="middle" class="mono ink" font-size="10.5" font-weight="600">BLK</text>
+  <circle cx="700" cy="260" r="7" fill="#c9a227"/>
+  <text x="700" y="308" text-anchor="middle" class="mono" font-size="10.5" font-weight="600" fill="#a8871e">YEL</text>
+  <circle cx="760" cy="260" r="7" fill="#3e8e5a"/>
+  <text x="760" y="308" text-anchor="middle" class="mono" font-size="10.5" font-weight="600" fill="#3e8e5a">GRN</text>
+
+  <circle cx="300" cy="260" r="7" fill="#8a8f8c"/>
+  <circle cx="350" cy="260" r="7" fill="#8a8f8c"/>
+  <text x="325" y="308" text-anchor="middle" class="mono dim" font-size="10.5">AC  AC</text>
+  <circle cx="420" cy="260" r="7" fill="#8a8f8c"/>
+  <circle cx="470" cy="260" r="7" fill="#8a8f8c"/>
+  <text x="445" y="308" text-anchor="middle" class="mono dim" font-size="10.5">AUX±</text>
+  <text x="520" y="308" text-anchor="middle" class="mono dim" font-size="10.5">BELL</text>
+  <circle cx="520" cy="260" r="7" fill="#8a8f8c"/>
+
+  <!-- ================= STAGE 3 chip ================= -->
+  <rect x="300" y="70" width="250" height="120" rx="6" fill="#fff" stroke="#2b2f2e" stroke-width="1.5"/>
+  <text x="316" y="96" class="sans ink" font-size="12" font-weight="700">Stage 3 · supply</text>
+  <text x="316" y="116" class="mono ink" font-size="10.5">V⎓ · range 20</text>
+  <text x="316" y="136" class="mono ink" font-size="10.5">red → RED · black → BLK</text>
+  <text x="316" y="160" class="mono" font-size="11" font-weight="600" fill="#3e8e5a">expect 12.6–14.0 VDC</text>
+  <text x="316" y="178" class="mono dim" font-size="9.5">0 V? see stage 3 — try adding battery</text>
+  <!-- probes -->
+  <path d="M470,190 C500,215 545,235 574,252" fill="none" stroke="#c0392b" stroke-width="2" stroke-dasharray="5 4"/>
+  <circle cx="580" cy="260" r="10" fill="none" stroke="#c0392b" stroke-width="2"/>
+  <path d="M500,190 C540,215 595,232 632,250" fill="none" stroke="#2b2f2e" stroke-width="2" stroke-dasharray="5 4"/>
+  <circle cx="640" cy="260" r="10" fill="none" stroke="#2b2f2e" stroke-width="2"/>
+
+  <!-- ================= STAGE 4 chip ================= -->
+  <rect x="596" y="70" width="260" height="120" rx="6" fill="#fff" stroke="#2b2f2e" stroke-width="1.5"/>
+  <text x="612" y="96" class="sans ink" font-size="12" font-weight="700">Stage 4 · is the CPU clocking?</text>
+  <text x="612" y="116" class="mono ink" font-size="10.5">V⎓ · range 20 · black stays on BLK</text>
+  <text x="612" y="136" class="mono ink" font-size="10.5">red moves to YEL</text>
+  <text x="612" y="160" class="mono" font-size="11" font-weight="600" fill="#3e8e5a">wobbly / drifting = clocking ✓</text>
+  <text x="612" y="178" class="mono" font-size="10" fill="#c0392b">rock-steady 12 V = suspicious</text>
+  <!-- probe -->
+  <path d="M680,190 C700,215 700,230 700,246" fill="none" stroke="#c9a227" stroke-width="2" stroke-dasharray="5 4"/>
+  <circle cx="700" cy="260" r="10" fill="none" stroke="#c9a227" stroke-width="2"/>
+
+  <!-- ================= STAGE 5 keypad ================= -->
+  <rect x="540" y="380" width="280" height="130" rx="6" fill="#fff" stroke="#2b2f2e" stroke-width="1.5"/>
+  <text x="680" y="440" text-anchor="middle" class="sans ink" font-size="13" font-weight="700">PC5508ZT keypad</text>
+  <text x="680" y="458" text-anchor="middle" class="mono dim" font-size="9.5">stage 5 — best diagnostic you own</text>
+  <text x="680" y="490" text-anchor="middle" class="mono dim" font-size="9.5">healthy first power-up: [*][2] lights zone LEDs 1 · 3 · 8</text>
+  <text x="588" y="404" text-anchor="middle" class="mono" font-size="10.5" font-weight="600" fill="#c0392b">R</text>
+  <text x="636" y="404" text-anchor="middle" class="mono ink" font-size="10.5" font-weight="600">B</text>
+  <text x="704" y="404" text-anchor="middle" class="mono" font-size="10.5" font-weight="600" fill="#a8871e">Y</text>
+  <text x="756" y="404" text-anchor="middle" class="mono" font-size="10.5" font-weight="600" fill="#3e8e5a">G</text>
+  <path d="M588,392 V330 H580 V318" fill="none" stroke="#c0392b" stroke-width="2.5"/>
+  <path d="M636,392 V318 H640" fill="none" stroke="#2b2f2e" stroke-width="2.5"/>
+  <path d="M704,392 V330 H700 V318" fill="none" stroke="#c9a227" stroke-width="2.5"/>
+  <path d="M756,392 V330 H760 V318" fill="none" stroke="#3e8e5a" stroke-width="2.5"/>
+
+  <!-- safety strip -->
+  <text x="24" y="540" class="mono" font-size="10" fill="#c0392b" font-weight="600">never connect or disconnect a Keybus wire with the panel powered — AC off, battery unplugged first</text>
+  <text x="24" y="360" class="mono dim" font-size="10">probe the metal screw heads, not the plastic · a minus sign just means swapped probes</text>
+</svg>

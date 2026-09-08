@@ -1,0 +1,99 @@
+<svg viewBox="0 0 880 520" xmlns="http://www.w3.org/2000/svg" role="img"
+     aria-label="DIY power tree and siren switching. A 12 volt DC adapter feeds the PIR motion detectors directly, feeds an LM2596 buck converter set to 5 volts for the ESP32, and feeds the relay common contact. The ESP32 drives the relay module input from GPIO 26; the relay's normally-open contact switches 12 volts to the siren. All grounds are common.">
+  <style>
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .sans { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+    .ink  { fill: #2b2f2e; }
+    .dim  { fill: #6d7a76; }
+  </style>
+  <defs>
+    <marker id="arrp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#2b2f2e"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="880" height="520" rx="8" fill="#f7f6f3" stroke="#d8d5cd"/>
+  <text x="24" y="34" class="sans ink" font-size="16" font-weight="700">DIY build — power tree and siren switching</text>
+
+  <!-- 12V adapter -->
+  <rect x="24" y="70" width="140" height="80" rx="4" fill="#eeece7" stroke="#2b2f2e" stroke-width="1.5"/>
+  <text x="94" y="102" text-anchor="middle" class="sans ink" font-size="13" font-weight="700">12 V DC</text>
+  <text x="94" y="120" text-anchor="middle" class="mono dim" font-size="10">adapter · 1.5–2 A</text>
+  <circle cx="164" cy="95" r="5" fill="#c0392b"/>
+  <circle cx="164" cy="130" r="5" fill="#2b2f2e"/>
+  <text x="176" y="88" class="mono" font-size="10" font-weight="600" fill="#c0392b">+12 V</text>
+  <text x="176" y="146" class="mono dim" font-size="10">−</text>
+
+  <!-- 12V distribution spine -->
+  <path d="M169,95 H230" fill="none" stroke="#c0392b" stroke-width="2.5"/>
+  <circle cx="230" cy="95" r="4.5" fill="#c0392b"/>
+  <path d="M230,95 V330" fill="none" stroke="#c0392b" stroke-width="2.5"/>
+
+  <!-- branch 1: PIRs -->
+  <path d="M230,95 H330" fill="none" stroke="#c0392b" stroke-width="2.5" marker-end="url(#arrp)"/>
+  <rect x="334" y="66" width="180" height="62" rx="4" fill="#fff" stroke="#2b2f2e" stroke-width="1.5"/>
+  <text x="424" y="92" text-anchor="middle" class="sans ink" font-size="12" font-weight="700">PIR motion detectors</text>
+  <text x="424" y="110" text-anchor="middle" class="mono dim" font-size="10">12 V+ · ~15–25 mA each</text>
+
+  <!-- branch 2: buck -->
+  <circle cx="230" cy="200" r="4.5" fill="#c0392b"/>
+  <path d="M230,200 H330" fill="none" stroke="#c0392b" stroke-width="2.5"/>
+  <rect x="330" y="170" width="184" height="66" rx="4" fill="#fff" stroke="#2b2f2e" stroke-width="1.5"/>
+  <text x="422" y="194" text-anchor="middle" class="sans ink" font-size="12" font-weight="700">LM2596 buck</text>
+  <text x="422" y="212" text-anchor="middle" class="mono" font-size="10" fill="#e08a2e" font-weight="600">set OUT to 5.0 V first</text>
+  <path d="M514,200 H600" fill="none" stroke="#c0392b" stroke-width="2.5" marker-end="url(#arrp)"/>
+  <text x="540" y="192" class="mono" font-size="10" font-weight="600" fill="#c0392b">5.0 V</text>
+
+  <!-- ESP32 -->
+  <rect x="604" y="150" width="180" height="180" rx="4" fill="#eeece7" stroke="#2b2f2e" stroke-width="2"/>
+  <text x="694" y="188" text-anchor="middle" class="sans ink" font-size="16" font-weight="700">ESP32</text>
+  <text x="616" y="212" class="mono ink" font-size="11" font-weight="600">5V / VIN</text>
+  <text x="616" y="252" class="mono" font-size="11" font-weight="600" fill="#3b6ea5">GPIO 26 → relay IN</text>
+  <text x="616" y="278" class="mono ink" font-size="11">5V → relay VCC</text>
+  <text x="616" y="304" class="mono ink" font-size="11" font-weight="600">GND</text>
+
+  <!-- branch 3: relay COM -->
+  <path d="M230,330 H330" fill="none" stroke="#c0392b" stroke-width="2.5"/>
+  <text x="244" y="322" class="mono" font-size="10" fill="#c0392b">to relay COM</text>
+
+  <!-- relay module -->
+  <rect x="330" y="290" width="200" height="130" rx="4" fill="#fff" stroke="#2b2f2e" stroke-width="1.5"/>
+  <text x="430" y="314" text-anchor="middle" class="sans ink" font-size="12" font-weight="700">opto-isolated relay</text>
+  <text x="430" y="330" text-anchor="middle" class="mono dim" font-size="10">5 V coil module</text>
+  <text x="342" y="356" class="mono ink" font-size="10.5">COM</text>
+  <text x="342" y="380" class="mono ink" font-size="10.5">NO</text>
+  <text x="342" y="404" class="mono dim" font-size="10.5">NC — unused</text>
+  <text x="518" y="356" text-anchor="end" class="mono" font-size="10.5" fill="#3b6ea5">IN</text>
+  <text x="518" y="380" text-anchor="end" class="mono ink" font-size="10.5">VCC</text>
+  <text x="518" y="404" text-anchor="end" class="mono ink" font-size="10.5">GND</text>
+
+  <!-- COM feed continues from spine at y=330 into module edge at (330,352)-->
+  <path d="M330,330 V352" fill="none" stroke="#c0392b" stroke-width="2.5" transform="translate(-8,0)"/>
+  <path d="M322,352 H330" fill="none" stroke="#c0392b" stroke-width="2.5"/>
+
+  <!-- control wires ESP32 -> relay right edge -->
+  <path d="M604,248 H560 V352 H530" fill="none" stroke="#3b6ea5" stroke-width="2"/>
+  <path d="M604,274 H574 V376 H530" fill="none" stroke="#2b2f2e" stroke-width="2"/>
+  <path d="M604,300 H588 V400 H530" fill="none" stroke="#2b2f2e" stroke-width="2"/>
+
+  <!-- NO -> siren -->
+  <path d="M330,376 H300 V450 H360" fill="none" stroke="#e08a2e" stroke-width="2.5" marker-end="url(#arrp)"/>
+  <rect x="364" y="424" width="130" height="52" rx="4" fill="#fff" stroke="#2b2f2e" stroke-width="1.5"/>
+  <text x="429" y="446" text-anchor="middle" class="sans ink" font-size="12" font-weight="700">siren</text>
+  <text x="429" y="464" text-anchor="middle" class="mono dim" font-size="10">0.5–1 A at 12 V</text>
+  <text x="240" y="442" class="mono" font-size="10" fill="#e08a2e">switched +12 V</text>
+  <!-- siren - to ground -->
+  <path d="M494,450 H620 V486" fill="none" stroke="#2b2f2e" stroke-width="2.5"/>
+
+  <!-- ground bus -->
+  <path d="M164,130 V486 H620" fill="none" stroke="#2b2f2e" stroke-width="2.5"/>
+  <circle cx="620" cy="486" r="4.5" fill="#2b2f2e"/>
+  <path d="M636,486 H700" fill="none" stroke="#2b2f2e" stroke-width="2.5" stroke-dasharray="4 4"/>
+  <text x="710" y="490" class="mono dim" font-size="10">…ESP32 GND, buck −,</text>
+  <text x="710" y="504" class="mono dim" font-size="10">PIR −, zone COM legs</text>
+  <path d="M400,486 V498" fill="none" stroke="#2b2f2e" stroke-width="2" transform="translate(-236,0)"/>
+  <path d="M146,498 H182 M152,505 H176 M158,512 H170" fill="none" stroke="#2b2f2e" stroke-width="2"/>
+  <text x="196" y="510" class="mono dim" font-size="10">one common ground — not optional</text>
+
+  <text x="24" y="60" class="mono dim" font-size="10">the 2N3904 from the Keybus build cannot switch a siren — use the relay module</text>
+</svg>

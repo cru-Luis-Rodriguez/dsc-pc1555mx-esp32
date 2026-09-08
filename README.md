@@ -90,6 +90,8 @@ built around HA though, so the standalone path is the less-travelled one.
 
 Wire clock, data, and ground per `docs/wiring.md`. Skip the transistor for now.
 
+![Wiring overview: panel AUX through a buck converter to the ESP32, Yellow and Green through 33k/10k dividers into GPIO 18 and 19, grounds common](docs/img/keybus-esp32.svg)
+
 ```bash
 pio run -e serial -t upload -t monitor
 ```
