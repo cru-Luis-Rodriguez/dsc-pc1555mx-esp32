@@ -149,11 +149,18 @@ power loss report immediately instead of after 30 minutes.
 
 ## Verification status
 
+**Both targets compile clean** — verified 2026-09-07 with PlatformIO 6.1.19 against
+the pinned `espressif32@6.9.0` and `dscKeybusInterface@3.0.0`:
+
+```
+pio run -e serial   → SUCCESS   RAM 7.2%, flash 21.9%
+pio run -e web      → SUCCESS
+```
+
 The sketches are written against the library's published v3.0 API — every field used
 (`dsc.armedStay[]`, `dsc.openZones[]`, `dsc.keybusConnected`, `dsc.panelVersion`, …)
-is taken from the upstream `examples/esp32/Status/Status.ino`. They have **not** been
-compiled here; the sandbox couldn't reach the PlatformIO registry to fetch the ESP32
-toolchain. Run `pio run -e serial` locally as the first real check.
+is taken from the upstream `examples/esp32/Status/Status.ino`. Not yet tested against
+a live panel — that's stage 6 of `docs/panel-bringup.md`.
 
 ## References
 
