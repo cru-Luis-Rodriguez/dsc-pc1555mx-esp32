@@ -174,7 +174,7 @@ back before moving on.
 | **~5.6 kΩ** (`5.60k`) | Healthy DSC single-EOL loop, contacts closed. **This is the ideal result.** |
 | ~2.2 kΩ, ~1 kΩ, other stable value | A different EOL resistor value. Perfectly fine — just record it, the DIY design adapts. |
 | **~0 Ω** (`0.00` – `0.5`) | Loop closed with **no EOL resistor** — EOL supervision was disabled. Valid, but you lose tamper detection. Note it. |
-| ~11.2 kΩ | Two 5.6 kΩ resistors in series — likely double-EOL (DEOL) wiring. |
+| ~11.2 kΩ | Two 5.6 kΩ in series. On DSC double-EOL (DEOL) wiring this is the *violated* state — secure DEOL reads ~5.6 kΩ, same as single-EOL. So 11.2 kΩ with the door shut means either DEOL with a contact that isn't closing, or a non-standard loop. The open/close test below distinguishes: a DEOL zone jumps 5.6 k ↔ 11.2 k instead of 5.6 k ↔ `OL`. |
 | **`OL` / `1` / open** | No connection. Could be a broken wire, an open contact, **or a door on that zone genuinely standing open.** See the next test before concluding anything. |
 | Very high but not open (50 kΩ+) | A corroded splice or connection. Suspect, worth chasing. |
 | Drifting, won't settle | Poor probe contact — press harder — or a corroded joint in the loop. |
@@ -410,7 +410,7 @@ readable.
 | | |
 |---|---|
 | Part | `LCD5500Z` — 64-zone programmable alphanumeric LCD |
-| Requires | PC1555 **v3 or higher** — this panel is **V3.26** ✅ |
+| Requires | PC1555 / Power632 **v2.3 or higher** per DSC's compatibility listing — this panel is **V3.26** ✅. (A "v3.0+" you may see in DSC docs refers to the *keypad's own* firmware, for custom labels — not a panel requirement.) |
 | Where | eBay and alarm specialty retailers; discontinued, so used / new-old-stock |
 | Not on | Amazon, reliably — Amazon carries the incompatible PK-series instead |
 

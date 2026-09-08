@@ -45,7 +45,8 @@ Many LM2596 modules ship at 12 V+ out of the box and will destroy the board.
 
 - **Do not power an ESP32 from the panel's Aux directly.** ESP32 dev boards need the
   buck converter; only AVR Arduinos tolerate Vin straight from Aux(+).
-- The PC1555MX Aux output is ~500 mA. An ESP32 peaks around 250 mA on WiFi TX, so
+- The PC1555 Aux output is rated **550 mA** (manual §1.1 — and one keypad's draw is
+  already counted against it). An ESP32 peaks around 250 mA on WiFi TX, so
   check your existing load (keypads, motions, sirens) has headroom before adding it.
   If it's tight, power the ESP32 from a separate USB supply and tie only the grounds
   together — the divider still works, the panel just isn't sourcing the current.
@@ -60,8 +61,9 @@ Many LM2596 modules ship at 12 V+ out of the box and will destroy the board.
 ## Parts
 
 > ⚠️ **Buy an original ESP32 (ESP32-WROOM-32), not an S3/C3/C6.** dscKeybusInterface
-> supports esp32 and esp32-s2 only — the newer RISC-V parts have different timer
-> peripherals and are not supported. Many boards sold today as "ESP32" are S3 or C3.
+> supports esp32 and esp32-s2 only. The S3 (Xtensa) and the RISC-V parts (C3/C6)
+> have different timer peripherals and are not supported. Many boards sold today as
+> "ESP32" are S3 or C3.
 > Check the silkscreen on the metal can reads `ESP32-WROOM-32` (a trailing D/E/U is
 > fine; `-S3` or `-C3` is not). Prefer a **CP2102** USB-UART over CH340 — macOS has
 > a built-in CP210x driver, CH340 clones usually need a WCH driver on Apple Silicon.

@@ -156,12 +156,18 @@ installer programming.
 2. Run the library's `Unlocker` sketch — on ESP32 it tries codes in order of
    statistical frequency and typically lands it in minutes to hours. It needs the
    write transistor wired.
-3. Hardware default: power down (AC off, battery disconnected), jumper the **Z1
-   terminal to PGM1**, restore power briefly, remove the jumper.
-   ⚠️ Confirm the exact steps against §5.28 (page 26) of your manual before doing
-   this — I could not transcribe that page directly. It also **wipes all
-   programming**, and it does nothing if installer lockout (`[990]`) was set. A panel
-   with installer lockout and an unknown code cannot be recovered in the field.
+3. Hardware default (manual §5.28, verified):
+   1. Remove AC and battery.
+   2. **Remove all wires from the Z1 and PGM1 terminals.**
+   3. Short Z1 to PGM1 with a piece of wire.
+   4. Apply **AC** power — battery alone will not default the panel.
+   5. When **zone light 1** lights on the keypad, the default is complete.
+   6. Remove AC, remove the jumper, restore the original wiring.
+
+   It **wipes all programming**, and it does nothing if installer lockout (`[990]`)
+   was set — the manual states a hardware default cannot be performed with lockout
+   enabled. A panel with installer lockout and an unknown code cannot be recovered
+   in the field.
 
 ## Sources
 
