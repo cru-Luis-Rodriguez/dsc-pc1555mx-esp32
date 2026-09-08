@@ -1,6 +1,6 @@
-# Panel bring-up and triage — PC1555MX after long storage
+# Panel bring-up and triage — PC1555 after long storage
 
-For a PC1555MX (Power632) that has been unpowered for roughly 20 years, is **not
+For a PC1555 (Power632) that has been unpowered for roughly 20 years, is **not
 monitored**, and is **not armed**. Goal: find out whether the board still works,
 and if it doesn't, find out *which part* doesn't.
 
@@ -35,9 +35,10 @@ Three consequences:
   states all PowerSeries panels are supported, so this should be fine, but it is the
   one genuine unknown in the stack. Keep it in mind at stage 6, not before.
 
-> Naming note: this repo says "PC1555MX" throughout. The board is a plain PC1555.
-> `pc1555mx-programming.md` was transcribed from the PC1555 manual, so its section
-> numbers and defaults are right for this board regardless of the filename.
+> Naming note: this repo was originally written as "PC1555MX" before the board was
+> identified from photos as a plain PC1555 (`UA186 REV A`). Docs and repo name now say
+> PC1555. Everything MX-specific was already correct for the plain board —
+> `pc1555-programming.md` was transcribed from the PC1555 manual from the start.
 
 ### Already wired, visible in the photo
 
@@ -116,7 +117,7 @@ battery area. Continue.
 
 **Stop:** widespread corrosion crossing multiple traces, or visible burn damage. The
 board *may* still be repairable, but you're now doing electronics rework, not bring-up.
-A replacement PC1555MX or a newer PowerSeries board is often cheaper than the hours.
+A replacement PC1555 or a newer PowerSeries board is often cheaper than the hours.
 
 ---
 
@@ -455,7 +456,7 @@ decide whether you care.
 ### If the keypad works but you can't get into programming
 
 Your installer code may not be `5555`. See
-[`pc1555mx-programming.md`](pc1555mx-programming.md) — it covers the code candidates,
+[`pc1555-programming.md`](pc1555-programming.md) — it covers the code candidates,
 the `Unlocker` sketch, and the hardware default jumper.
 
 Two things to know before you go down that road:
@@ -578,7 +579,7 @@ Notes:
 | Zone reads `OL` with its door shut | Broken loop wire or dead contact | Stage 1b |
 | Motion zone reads open, panel unpowered | **Expected** — PIRs fail safe | Not a fault |
 | Every reading is 0 or blank | Meter setup, not the panel | `multimeter-basics.md` §2 |
-| Can't enter programming | Unknown installer code | `pc1555mx-programming.md` |
+| Can't enter programming | Unknown installer code | `pc1555-programming.md` |
 
 ## What usually fails on a 20-year-dormant panel
 

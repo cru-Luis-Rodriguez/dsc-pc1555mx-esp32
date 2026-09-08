@@ -1,20 +1,20 @@
-# DSC PC1555MX Keybus interface — ESP32 + macOS
+# DSC PC1555 Keybus interface — ESP32 + macOS
 
-Reads a DSC PC1555MX (Power632) PowerSeries panel over its Keybus and exposes zone,
+Reads a DSC PC1555 (Power632) PowerSeries panel over its Keybus and exposes zone,
 arming, and trouble state — first over USB serial, then as a self-hosted web page on
 your LAN. No cloud, no broker, no subscription.
 
 - [`docs/panel-bringup.md`](docs/panel-bringup.md) — **start here if the panel has been sitting unpowered** — staged diagnostics
 - [`docs/multimeter-basics.md`](docs/multimeter-basics.md) — **never used a multimeter?** read this first; procedures P1–P4 that the other docs reference
 - [`docs/wiring.md`](docs/wiring.md) — hardware, resistor divider, parts list
-- [`docs/pc1555mx-programming.md`](docs/pc1555mx-programming.md) — installer programming sections
+- [`docs/pc1555-programming.md`](docs/pc1555-programming.md) — installer programming sections
 - [`docs/diy-zone-reader.md`](docs/diy-zone-reader.md) — fallback if the panel is dead: read zone loops directly, Konnected-style
 
 ## Two things in your original notes to fix before you buy parts
 
 1. **The pins were Arduino Uno pins, and one was wrong.** On the Uno the library uses
    clock 3, read **5**, write **6** — pin 4 is `dscPC16Pin`, for DSC *Classic* panels
-   only, which the PC1555MX is not. On ESP32 it's **clock 18, read 19, write 21**.
+   only, which the PC1555 is not. On ESP32 it's **clock 18, read 19, write 21**.
 2. **An ESP32 cannot be powered from Aux(+) directly.** The buck converter is
    mandatory, not "or just power it separately". Set it to 5.0 V with a meter first.
 
@@ -136,7 +136,7 @@ read-only; put the ESP32 on an IoT VLAN; or add HTTP basic auth
 
 ## Panel-side programming
 
-See [`docs/pc1555mx-programming.md`](docs/pc1555mx-programming.md) for the full
+See [`docs/pc1555-programming.md`](docs/pc1555-programming.md) for the full
 section reference. The one change the interface actually wants:
 
 ```
@@ -166,6 +166,6 @@ a live panel — that's stage 6 of `docs/panel-bringup.md`.
 
 ## References
 
-- [taligentx/dscKeybusInterface](https://github.com/taligentx/dscKeybusInterface) — the library; PC1555MX is explicitly on its tested list
+- [taligentx/dscKeybusInterface](https://github.com/taligentx/dscKeybusInterface) — the library; the PC1555MX is on its tested list (the plain PC1555 isn't, but the library supports all PowerSeries panels — see `docs/panel-bringup.md`)
 - [Issue #344 — arduino-esp32 3.x incompatibility](https://github.com/taligentx/dscKeybusInterface/issues/344)
 - [DSC PC1555 installation manual](https://www.manualslib.com/manual/2391841/Dsc-Pc1555.html)

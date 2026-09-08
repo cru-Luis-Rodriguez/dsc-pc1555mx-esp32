@@ -1,4 +1,4 @@
-# PC1555MX / Power632 — installer programming reference
+# PC1555 / Power632 — installer programming reference
 
 Transcribed from the DSC PC1555 (PowerSeries, 52-page) installation manual,
 Section 6 Programming Worksheets. Section numbers are the same on the v2.x manual.
@@ -50,7 +50,7 @@ Typical residential layout: front door `01`, back door `02`, windows/glassbreak 
 hallway motion `05` (so it's bypassed when armed stay), basement motion `04`.
 
 `[002]` = zones 9–16, `[003]` = zones 17–24, `[004]` = zones 25–32 — same code table,
-all default `00`. On the PC1555MX these are **wireless zones only** (needs a PC5132
+all default `00`. On the PC1555 these are **wireless zones only** (needs a PC5132
 receiver); the panel has 6 hardwired zones on board, 8 with keypad zones.
 
 ## `[101]`–`[132]` Zone attributes

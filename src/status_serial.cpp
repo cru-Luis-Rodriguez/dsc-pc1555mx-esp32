@@ -1,7 +1,7 @@
 /*
  * Milestone 1 — serial status stream
  *
- * Prints DSC PC1555MX status changes to the USB serial monitor.
+ * Prints DSC PC1555 status changes to the USB serial monitor.
  * Adapted from the dscKeybusInterface "Status" example (esp32).
  *
  * Build:  pio run -e serial -t upload -t monitor
@@ -28,7 +28,7 @@ void setup() {
   Serial.begin(115200);
   delay(1000);
   Serial.println();
-  Serial.println(F("DSC PC1555MX Keybus interface starting..."));
+  Serial.println(F("DSC PC1555 Keybus interface starting..."));
 
   dsc.begin();
   Serial.println(F("Online. Waiting for Keybus data."));
@@ -56,7 +56,7 @@ void loop() {
     Serial.println(dsc.keybusConnected ? F("Keybus connected") : F("Keybus disconnected"));
   }
 
-  // --- Partition status (PC1555MX has one partition, but loop anyway) ---
+  // --- Partition status (PC1555 has one partition, but loop anyway) ---
   for (byte partition = 0; partition < dscPartitions; partition++) {
 
     if (dsc.disabledChanged[partition]) {

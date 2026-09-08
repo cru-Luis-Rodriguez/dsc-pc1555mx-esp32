@@ -1,11 +1,11 @@
-# Wiring — PC1555MX Keybus to ESP32
+# Wiring — PC1555 Keybus to ESP32
 
 ## Corrections to the pin assignments you had
 
 Your notes listed Arduino Uno pins (clock 3, data 4, keypad 5). Two things are off:
 
 - On the Uno the library's own defaults are **clock 3, read 5, write 6**. Pin 4 is
-  `dscPC16Pin`, used only for DSC *Classic* series panels — not the PC1555MX.
+  `dscPC16Pin`, used only for DSC *Classic* series panels — not the PC1555.
 - You're on ESP32, so the pins are different again: **clock 18, read 19, write 21**.
 
 The 33k / 10k divider values in your notes are correct for ESP32. (The 15k / 10k

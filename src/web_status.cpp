@@ -31,7 +31,7 @@
 #define dscReadPin  19
 #define dscWritePin 21
 
-#define ZONE_COUNT 8  // PC1555MX: 6 on-board zones, up to 8 with keypad zones
+#define ZONE_COUNT 8  // PC1555: 6 on-board zones, up to 8 with keypad zones
 
 // Friendly zone names — edit to match your install
 const char* zoneNames[ZONE_COUNT] = {
@@ -82,7 +82,7 @@ border-radius:8px;background:var(--bg);color:var(--fg);cursor:pointer}
 .pad button:active{background:var(--line)}
 #stale{display:none;color:var(--warn);font-size:.85rem;margin-top:.5rem}
 </style></head><body><div class="wrap">
-<h1>DSC PC1555MX</h1>
+<h1>DSC PC1555</h1>
 
 <div class="card">
   <p class="state" id="state">Connecting…</p>
