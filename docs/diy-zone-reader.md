@@ -44,17 +44,7 @@ Write down what each zone measures. The circuit is designed around that number.
 
 For a loop with a **5.6 kΩ** EOL resistor:
 
-```
-                    R1 = 5.6k
-   ESP32 3.3V ─────────/\/\/\─────────┬──── R3 = 1k ──── ESP32 ADC pin
-                                      │                       │
-                                      │                  C1 = 0.1uF
-                              R2 = 15k│                       │
-                                      │                      GND
-                                      ├──── zone wire 1
-                                      │
-                                     GND ─── zone wire 2 (the COM leg)
-```
+![Per-zone circuit: 3.3 V through R1 5.6k to a sense node; R3 1k from the node to the ADC pin with C1 0.1 µF to ground on the ADC side; R2 15k from the node to ground; the zone loop with its EOL resistor also from the node to ground](img/diy-zone-circuit.svg)
 
 - **R1 (5.6 k)** is the pull-up. Matching it to the EOL value puts the "normal" reading
   near mid-scale.
@@ -122,16 +112,7 @@ conflict only affects analog reads. Use **GPIO 25, 26, 27** or **13**. Avoid GPI
 The DSC board was doing more for you than reading zones. Removing it means supplying
 12 V yourself, because **PIR motion detectors are 12 V devices.**
 
-```
-12V DC adapter (1.5-2A) ──┬──► PIR motion detectors (12V+)
-                          │
-                          ├──► LM2596 buck converter IN+
-                          │      └── OUT+ set to 5.0V ──► ESP32 5V / VIN pin
-                          │
-                          └──► siren relay common (see below)
-
-All grounds tied together: adapter −, buck OUT−, ESP32 GND, PIR −, zone COM legs
-```
+![Power tree: the 12 V adapter feeds the PIRs directly, the LM2596 buck (set to 5.0 V) for the ESP32, and the siren relay's common contact; every ground is tied together](img/diy-power-siren.svg)
 
 > ⚠️ **Set the LM2596 to 5.0 V with your multimeter (P1) before connecting the ESP32.**
 > Many of these modules ship at 12 V out of the box and will destroy the board
@@ -152,17 +133,10 @@ If you want the bell to sound, you need something that can switch real current �
 siren pulls 500 mA to 1 A. **The 2N3904 in the Keybus parts list is nowhere near
 adequate** (it's rated 200 mA, and it's there for signalling, not load switching).
 
-Use an **opto-isolated relay module** with a 5 V coil, about $5:
-
-```
-ESP32 GPIO 26 ──► relay module IN
-ESP32 5V      ──► relay module VCC
-ESP32 GND     ──► relay module GND
-
-12V adapter + ──► relay COM
-relay NO      ──► siren +
-siren −       ──► GND
-```
+Use an **opto-isolated relay module** with a 5 V coil, about $5 — wiring is in the
+power-tree diagram above (step 4): GPIO 26 → IN, ESP32 5V → VCC, ESP32 GND → GND on
+the control side; 12 V adapter + → COM, NO → siren +, siren − → ground on the
+switched side.
 
 A logic-level N-channel MOSFET (IRLZ44N or similar) also works and is quieter, but the
 relay module is one part with screw terminals and no gate-drive subtleties.
