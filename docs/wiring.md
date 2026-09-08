@@ -81,6 +81,17 @@ Many LM2596 modules ship at 12 V+ out of the box and will destroy the board.
 
 Amazon prices verified Aug 31 2026, Orlando delivery. Prices move — reverify.
 
+### Required for the panel bring-up (before any ESP32 work)
+
+| Item | Pick | Price |
+|---|---|---|
+| Digital multimeter | Any DMM with DC/AC volts, resistance (20k range), continuity — AstroAI or Klein entry models are fine | ~$15–35 |
+| 12 V SLA battery, 4–7 Ah | Generic AGM (Mighty Max ML4-12 / ML5-12 class), F1 terminals | ~$20–25 |
+
+The battery is not optional in practice: some PowerSeries panels won't boot on AC
+alone (bring-up stage 3), and any path that keeps the panel needs one anyway. Skip
+the multimeter line only if you already own one.
+
 ### Required for milestone 1 (serial over USB)
 
 | Item | Pick | Price |

@@ -136,6 +136,15 @@ like `005` / `060`.
 Option 4 on = the library's `s` / `w` virtual keypad keys arm without an access code.
 Convenient; also means anything that can reach your web page can arm the system.
 
+Option 7 off = phone-line monitoring disabled. For an unmonitored install with no
+phone line this is the only way to clear the permanent trouble 3 — see the
+trouble-clearing table in `panel-bringup.md` stage 5.
+
+## Setting time and date (user function, not installer programming)
+
+`[*][6][master code][1]`, then 10 digits: `HH MM` (24-hour, 00:00–23:59) `MM DD YY`.
+Clears trouble 8 immediately. Default master code `1234`.
+
 ## Codes and resets
 
 | Section | Purpose |

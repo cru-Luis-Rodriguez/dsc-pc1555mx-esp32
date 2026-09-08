@@ -293,6 +293,19 @@ If you read 0 V:
 **Pass:** ~13.8 VDC on the Keybus. That means the transformer, the rectifier, and the
 regulator all work. Continue.
 
+### Before buying or connecting a battery: check the charging circuit
+
+While the panel is up on AC with no battery, measure DC across the panel's **battery
+leads** (red and black flying leads, not the Keybus): **P1**, range `20`, red probe on
+the red lead. A healthy charger floats at roughly **13.6–13.8 VDC** open-circuit.
+
+- **~13.6–13.8 V** — charging circuit works. Safe to buy and connect a fresh 12 V SLA.
+- **~0 V or a few volts** — charging circuit suspect. A new battery connected here will
+  just run down and die. Note it: the panel may still be usable on AC with the battery
+  as a one-way reserve, but don't trust it through an outage.
+
+Do this *before* spending on the battery, not after.
+
 ---
 
 ## Stage 4 — Is the CPU actually running?
@@ -387,6 +400,17 @@ Press `[#]` to exit.
 
 So on first power-up, a healthy panel should light **zone LEDs 1, 3 and 8** under
 `[*][2]`, with the Trouble LED on. That's the outcome you want.
+
+### Clearing those troubles, one by one
+
+| Trouble | Fix |
+|---|---|
+| **8** — loss of time | Set the clock: `[*][6][master code][1]`, then **10 digits**: `HH MM` (24-hour) `MM DD YY`. Default master code is `1234`. Clears immediately. |
+| **1** — service required (battery) | Connect a good 12 V battery — after the charging-circuit check in stage 3. |
+| **3** — telephone line | Permanent unless a phone line exists. For an unmonitored install, disable phone-line monitoring: installer programming, section `[016]`, turn **option 7 (TLM enabled)** off. This is the one trouble that never clears on its own. |
+
+None of these block anything — the ESP32 interface works fine with the trouble light
+on. Clear them for a quiet keypad, not for function.
 
 ### If you plan to reprogram: get an LCD keypad
 
@@ -503,6 +527,37 @@ which otherwise makes the interface go quiet after three alarms in one armed cyc
 
 ---
 
+## Stage 8 — Reintroduce the shed loads
+
+Stage 3 disconnected everything on AUX and BELL. Now that the panel is proven, put
+them back **one device at a time**, with a measurement between each, so a single bad
+device can't take the healthy system back down — or masquerade as a relapse.
+
+For each device, in this order (motions first, siren last):
+
+1. **Power down** — AC off, battery disconnected. Keybus rule applies here too.
+2. Reconnect **one** device's wires to AUX (or BELL for the siren).
+3. Power back up.
+4. Measure Keybus Red to Black (**P1**). Still **12.6–14.0 VDC**? Good — keypad still
+   lively, no new trouble under `[*][2]`? Move to the next device.
+5. **Voltage sags, PTC trips, or the panel browns out** → the device you just added is
+   the culprit. Disconnect it, confirm the panel recovers, and replace that device.
+   A 20-year-old PIR or siren is a $15–25 part.
+
+Notes:
+
+- **Motions** — once powered, their zones become testable for the first time: walk-test
+  each one and watch the zone open/restore on the keypad or the ESP32 serial stream.
+  This completes the coverage stage 1b couldn't give you.
+- **Siren** — expect nothing at idle; BELL only drives during an alarm. To test without
+  waking the street, trip a zone while armed and let it sound for a second, or
+  temporarily set bell cut-off (`[005]` entry 4) to its minimum first.
+- **Aux budget** — the Aux supply is 550 mA with one keypad already counted. Adding the
+  ESP32 (~250 mA peak) plus two or three PIRs (~15–25 mA each) fits, but if you added
+  more hardware, do the arithmetic before trusting it.
+
+---
+
 ## Triage summary
 
 | Symptom | Most likely cause | Go to |
@@ -614,6 +669,7 @@ Stage 3  Power-up, AC only
   AC at panel terminals ..................... __________ VAC
   Keybus Red to Black ....................... __________ VDC
   Started without battery? .................. Y / N
+  Battery leads, open-circuit (charger) ..... __________ VDC  (want ~13.6-13.8)
 
 Stage 4  CPU
   Yellow to Black ........................... __________ VDC
@@ -629,4 +685,11 @@ Stage 5  Keypad
 Stage 6  ESP32
   KeybusReader output ....................... ____________________
   platformio.ini platform ................... ____________________
+
+Stage 8  Loads back on
+  Device 1 ______________ reconnected → Keybus __________ VDC   OK? Y / N
+  Device 2 ______________ reconnected → Keybus __________ VDC   OK? Y / N
+  Device 3 ______________ reconnected → Keybus __________ VDC   OK? Y / N
+  Siren (BELL) reconnected → Keybus __________ VDC   sounded on test? Y / N
+  Motion walk-test: each zone opens/restores? .. Y / N
 ```
