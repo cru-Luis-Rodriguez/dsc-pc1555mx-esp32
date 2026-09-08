@@ -13,6 +13,46 @@ and if it doesn't, find out *which part* doesn't.
 
 ---
 
+## The panel in hand — identified from photos
+
+| | |
+|---|---|
+| Board silkscreen | `PC1555 UA186 REV A` — **plain PC1555, not PC1555MX** |
+| DSC part sticker | `70008150`, `UL 061003` |
+| Main IC (U3) | `06001489 R54CH` **V3.26**, date code `0637` |
+| Manufactured | Week 37 of **2006** (`0637`); UL code `061003` agrees |
+| AC input rating | `16V AC, 50/60Hz, 2.5A max` = 40 VA |
+| Family | DSC lists PC1555 under **PowerSeries** — Keybus, *not* Classic series |
+
+Three consequences:
+
+- **The wiring in `wiring.md` is correct as written.** PowerSeries means the 4-wire
+  Keybus and the `dscKeybusInterface` class. No `dscPC16Pin` — that's Classic-series
+  only (PC1500/PC1550/PC2550), and this isn't one.
+- **This is 2006 hardware, not 1990s hardware.** Electrolytics of that vintage kept
+  dry indoors usually survive. Age alone is weak evidence of failure here.
+- **`PC1555` is not on the library's *tested* list** — `PC1555MX` is. The library
+  states all PowerSeries panels are supported, so this should be fine, but it is the
+  one genuine unknown in the stack. Keep it in mind at stage 6, not before.
+
+> Naming note: this repo says "PC1555MX" throughout. The board is a plain PC1555.
+> `pc1555mx-programming.md` was transcribed from the PC1555 manual, so its section
+> numbers and defaults are right for this board regardless of the filename.
+
+### Already wired, visible in the photo
+
+The terminal strip reads `AC AC | ±AUX | +BELL− | RED BLK YEL GRN | 1 PGM 2 | 3 4`,
+and **field wiring is still connected on all of it** — including all four Keybus
+conductors. That means:
+
+- **A keypad is still wired in.** Stage 5, the best diagnostic here, is available to
+  you immediately at no cost. Do it.
+- **AUX and BELL have loads on them** — motions, sirens, whatever was installed. A
+  shorted 20-year-old siren or a water-damaged motion will drag the supply down and
+  make a perfectly healthy panel read as dead. Stage 3 has been amended accordingly.
+
+---
+
 ## Before you start
 
 ### Tools
@@ -98,6 +138,24 @@ does not clear the panel of suspicion — it just means you can't test the panel
 ---
 
 ## Stage 3 — First power-up, AC only
+
+### First: shed the existing loads
+
+Your panel still has field wiring on AUX, BELL, PGM and the zones. Before the first
+power-up, **label every wire, photograph the terminal strip, then disconnect**:
+
+- **AUX+ / AUX−** — powered devices (motions, glassbreaks, keypad-adjacent hardware)
+- **+BELL−** — siren or bell
+
+**Leave the Keybus (RED BLK YEL GRN) connected.** The keypad draws very little and it
+is your best diagnostic.
+
+Why this order: a single shorted device on AUX will pull the supply down and make a
+healthy panel look dead. You want the panel's supply measured unloaded first, then add
+loads back one at a time. Zones can stay connected — they're sense inputs, not loads —
+but if you see a low AUX reading later, they're the next thing to strip.
+
+### Then power up
 
 Battery still disconnected. Transformer reconnected to the panel's AC terminals, then
 plugged in.
@@ -252,7 +310,11 @@ the ambiguity this whole document exists to avoid. Raw first, decoded second.
 | Nothing at all | See the narrowed list below |
 
 Because you've already passed stages 3 and 4, "nothing at all" now means one of only
-three things, not six:
+four things, not six:
+
+0. **Panel variant** — this is a plain `PC1555`, which is PowerSeries (so the protocol
+   should match) but is not on the library's tested list. Consider this only after
+   ruling out the three below, since they're far more likely.
 
 1. **Wiring** — divider values, or clock and data swapped
 2. **Wrong GPIO pins** in the sketch (must be 18 and 19 to match `wiring.md`)
