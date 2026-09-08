@@ -5,8 +5,10 @@ arming, and trouble state — first over USB serial, then as a self-hosted web p
 your LAN. No cloud, no broker, no subscription.
 
 - [`docs/panel-bringup.md`](docs/panel-bringup.md) — **start here if the panel has been sitting unpowered** — staged diagnostics
+- [`docs/multimeter-basics.md`](docs/multimeter-basics.md) — **never used a multimeter?** read this first; procedures P1–P4 that the other docs reference
 - [`docs/wiring.md`](docs/wiring.md) — hardware, resistor divider, parts list
 - [`docs/pc1555mx-programming.md`](docs/pc1555mx-programming.md) — installer programming sections
+- [`docs/diy-zone-reader.md`](docs/diy-zone-reader.md) — fallback if the panel is dead: read zone loops directly, Konnected-style
 
 ## Two things in your original notes to fix before you buy parts
 

@@ -67,7 +67,7 @@ conductors. That means:
 
 | Item | Need | Note |
 |---|---|---|
-| Digital multimeter | Required | DC volts, AC volts, continuity |
+| Digital multimeter | Required | DC volts, AC volts, resistance, continuity — **never used one? Read [`multimeter-basics.md`](multimeter-basics.md) first** |
 | Screwdrivers | Required | Terminal screws are usually slotted |
 | Gloves + eye protection | Required | For handling the old battery only |
 | 16.5 VAC 40 VA transformer | Required | The panel's original, or a replacement |
@@ -120,15 +120,115 @@ A replacement PC1555MX or a newer PowerSeries board is often cheaper than the ho
 
 ---
 
+## Stage 1b — Characterize the zone loops
+
+**Do this even though it feels like a detour.** It tests your *sensors*, entirely
+independently of whether the panel works. Every path forward — repairing the PC1555,
+or replacing it with a DIY reader — depends on the door contacts and motions still
+being electrically sound. If they're dead after 20 years, that reframes the whole
+project before you spend a dollar.
+
+It also tells you the end-of-line resistor value, which the DIY design in
+[`diy-zone-reader.md`](diy-zone-reader.md) is built around.
+
+**Uses procedure [P3 — resistance](multimeter-basics.md#p3--measuring-resistance-ohms).**
+
+### Safety first
+
+The panel must be completely dead for resistance measurements to mean anything:
+
+1. Unplug the transformer at the wall.
+2. Battery disconnected (yours already is).
+3. **Verify** with [P1](multimeter-basics.md#p1--measuring-dc-volts): measure Keybus
+   Red to Black. You want `0`. If you read anything, stop and find out why.
+
+### Before you unscrew anything
+
+**Photograph the zone terminal strip**, close up and in focus. Then label each wire
+with masking tape as you remove it. Your strip reads:
+
+```
+Z1  COM  Z2   Z3  COM  Z4   Z5  COM  Z6
+```
+
+Note that **the COM terminals are shared between pairs** — Z1 and Z2 share one, Z3 and
+Z4 share the next, Z5 and Z6 the last. That's normal DSC wiring, and it matters: when
+you lift a COM wire you may be affecting two zones. Do one zone at a time and put it
+back before moving on.
+
+### The measurement, one zone at a time
+
+1. Make sure **all doors and windows on that zone are closed.**
+2. Loosen the screw on `Z1` and withdraw that wire. Loosen the shared `COM` and
+   withdraw the wire belonging to zone 1.
+3. Set the meter per **P3** — dial to `Ω`, range `20k`.
+4. Touch one probe to each of the two wire ends you just removed. Hold the bare metal,
+   not the insulation.
+5. Read and write it down.
+6. Reconnect both wires, tighten the screws, move to the next zone.
+
+### What the reading means
+
+| Reading | Interpretation |
+|---|---|
+| **~5.6 kΩ** (`5.60k`) | Healthy DSC single-EOL loop, contacts closed. **This is the ideal result.** |
+| ~2.2 kΩ, ~1 kΩ, other stable value | A different EOL resistor value. Perfectly fine — just record it, the DIY design adapts. |
+| **~0 Ω** (`0.00` – `0.5`) | Loop closed with **no EOL resistor** — EOL supervision was disabled. Valid, but you lose tamper detection. Note it. |
+| ~11.2 kΩ | Two 5.6 kΩ resistors in series — likely double-EOL (DEOL) wiring. |
+| **`OL` / `1` / open** | No connection. Could be a broken wire, an open contact, **or a door on that zone genuinely standing open.** See the next test before concluding anything. |
+| Very high but not open (50 kΩ+) | A corroded splice or connection. Suspect, worth chasing. |
+| Drifting, won't settle | Poor probe contact — press harder — or a corroded joint in the loop. |
+
+### The test that actually proves a sensor works
+
+A resistance number alone doesn't tell you the contact *switches*. So:
+
+1. With the probes still on a zone reading ~5.6 kΩ, **have someone open the door** on
+   that zone (or open it yourself and watch).
+2. The reading should jump to `OL` / open.
+3. Close the door. It should return to ~5.6 kΩ.
+
+**That transition is the real proof.** A sensor that changes state on demand is
+working, regardless of what the panel does.
+
+### Motion detectors will look broken — they aren't
+
+**Expect PIR motion zones to read open with the panel unpowered.** Alarm PIRs are
+designed fail-safe: they hold their relay contacts closed only while powered, so that
+losing power opens the loop and trips an alarm. With no power, that relay drops out and
+the zone reads open.
+
+So:
+
+- **Door and window contacts** are passive reed switches. They read correctly
+  unpowered, and the open/close test above works on them.
+- **Motion detectors and glassbreaks** are powered devices. An open reading is expected
+  and is *not* evidence of a fault. You can only test these once 12 V is available —
+  either from a working panel, or from the DIY build's supply.
+
+Designs vary, so if a motion zone reads ~5.6 kΩ unpowered, that's fine too. Just don't
+diagnose an open motion zone as a broken wire.
+
+### Record it
+
+Use the zone table in the measurement log at the bottom of this file. These numbers are
+the input to every later decision.
+
+---
+
 ## Stage 2 — Transformer, tested alone
 
 A dead transformer mimics a dead panel exactly, and it's the cheaper failure. Rule it
 out before you blame the board.
 
+**Uses procedure [P2 — AC volts](multimeter-basics.md#p2--measuring-ac-volts).**
+
 1. **Disconnect both transformer leads from the panel's AC terminals.** Testing it
    still connected measures the panel too, which defeats the purpose.
-2. Plug the transformer into the wall.
-3. Meter on **AC volts**, probes across the two low-voltage leads.
+2. Plug the transformer into the wall. **Only ever probe the two low-voltage output
+   leads — never the plug end, which is line voltage.**
+3. Set the meter per **P2**: dial to **AC volts** (`V~` / `ACV`), range `200`. AC has
+   no polarity, so either probe on either lead.
 
 | Reading | Meaning |
 |---|---|
@@ -168,7 +268,10 @@ but if you see a low AUX reading later, they're the next thing to strip.
 Battery still disconnected. Transformer reconnected to the panel's AC terminals, then
 plugged in.
 
-Meter on **DC volts**. Probe the Keybus **Red (+) to Black (−)** at the panel terminals.
+**Uses procedure [P1 — DC volts](multimeter-basics.md#p1--measuring-dc-volts).** Dial
+to **DC volts** (`V⎓` / `DCV`), range `20`. **Black** probe on the Keybus **Black**
+terminal, **red** probe on **Red**. Touch the metal screw head or bare wire, not the
+plastic. A minus sign just means the probes are swapped.
 
 | Reading | Meaning | Next |
 |---|---|---|
@@ -200,7 +303,8 @@ and it's the one people skip.
 The panel continuously polls the Keybus whether or not any keypad is attached, so
 clock activity is present on a healthy panel with nothing else connected.
 
-Meter on **DC volts**, **Yellow (clock) to Black**:
+Still on **P1 — DC volts**, range `20`. **Black** probe stays on the Keybus **Black**
+terminal; move the **red** probe to **Yellow**:
 
 | Reading | Meaning |
 |---|---|
@@ -411,6 +515,9 @@ which otherwise makes the interface go quiet after three alarms in one armed cyc
 | Keypad lights, shows troubles 1/3/8 | **Healthy panel** | Stage 6 |
 | ESP32 silent, stages 3–4 passed | Wiring, pins, or platform version | Stage 6 |
 | ESP32 garbled / CRC errors | Breadboard contacts | Solder it |
+| Zone reads `OL` with its door shut | Broken loop wire or dead contact | Stage 1b |
+| Motion zone reads open, panel unpowered | **Expected** — PIRs fail safe | Not a fault |
+| Every reading is 0 or blank | Meter setup, not the panel | `multimeter-basics.md` §2 |
 | Can't enter programming | Unknown installer code | `pc1555mx-programming.md` |
 
 ## What usually fails on a 20-year-dormant panel
@@ -485,6 +592,20 @@ Stage 1  Visual
   Corrosion near battery leads .............. ____________________
   Capacitors ................................ ____________________
   Other damage .............................. ____________________
+
+Stage 1b  Zone loops   (panel dead, doors/windows closed, P3 @ 20k)
+  Meter proved on a known battery first? .... Y / N
+                        closed      opens when triggered?   device type
+  Zone 1 ............ __________     Y / N / n-a           ____________
+  Zone 2 ............ __________     Y / N / n-a           ____________
+  Zone 3 ............ __________     Y / N / n-a           ____________
+  Zone 4 ............ __________     Y / N / n-a           ____________
+  Zone 5 ............ __________     Y / N / n-a           ____________
+  Zone 6 ............ __________     Y / N / n-a           ____________
+
+  EOL resistor value observed ............... __________ ohms
+  (device type: reed contact / motion PIR / glassbreak / unknown)
+  (motions reading open with no power is EXPECTED - not a fault)
 
 Stage 2  Transformer (disconnected from panel)
   AC across leads ........................... __________ VAC
