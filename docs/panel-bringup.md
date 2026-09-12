@@ -13,6 +13,62 @@ and if it doesn't, find out *which part* doesn't.
 
 ---
 
+> ## ⚠️ STATUS — power confirmed, communication NOT confirmed
+>
+> **Stage 2 and 3 pass.** On AC only with no battery, both keypads light up. The
+> transformer and the panel's power supply work, and nothing on AUX is shorted (all
+> field loads were still connected and it came up anyway).
+>
+> **Stage 4 and 5 do NOT pass, and are still open.**
+>
+> > **Correction to an earlier reading of this.** Keypads lighting up was initially
+> > taken as proof the CPU was running. **It is not.** Red and Black supply 12 V;
+> > Yellow and Green carry data. A keypad on a bus that is powered but silent will
+> > show a backlight and LEDs while displaying nothing valid. Power ≠ communication.
+>
+> Observed on the keypad, powered:
+>
+> | Indicator | State |
+> |---|---|
+> | Trouble | **lit** |
+> | Ready, Armed, Memory, Bypass, Fire, Program | all off |
+> | Zone LEDs 1–8 | **all off** |
+> | Audible | continuous beep ≈1/sec, **`[#]` does not silence** |
+> | Keypad input | **no key registers, on either keypad** |
+>
+> **Ready off with zero zone LEDs lit is internally inconsistent** — an open zone
+> lights its number. No valid zone status is reaching the keypads. That is the
+> "backlight only, no coherent display" row of the Stage 5 table: power reaches the
+> keypad, Keybus comms do not.
+>
+> **Next and decisive: the Stage 4 clock measurement on YEL.** It separates "power
+> supply fine, CPU dead" from "CPU running, fault downstream."
+>
+> `Program` off also rules out programming mode; `Fire` off rules out fire trouble.
+
+### Zone map — from the keypad label card
+
+| Zone | Label | Likely device |
+|---|---|---|
+| 1 | Front Door / Rear Door | two reed contacts in series on one loop |
+| 2 | Master Bedroom | motion |
+| 3 | 2nd Floor | motion |
+| 4 | Rear Windows | reed contacts |
+| 5 | Front Windows | reed contacts |
+| 6, 7, 8 | unused | — |
+
+**Five active zones, not six.** These are the labels to use in the web UI.
+
+### Keypads — two, and they differ
+
+| Location | Model | Face |
+|---|---|---|
+| — | `PC5508ZT` | black glossy, CE / RCM `N11427` |
+| — | Ranger American rebrand, PowerSeries LED, same 8-zone layout | white / cream |
+
+The rebrand is cosmetic — standard PowerSeries protocol underneath. Both behave
+identically, which points at the panel end rather than either keypad.
+
 ## The panel in hand — identified from photos
 
 | | |
@@ -321,17 +377,143 @@ and it's the one people skip.
 The panel continuously polls the Keybus whether or not any keypad is attached, so
 clock activity is present on a healthy panel with nothing else connected.
 
-Still on **P1 — DC volts**, range `20`. **Black** probe stays on the Keybus **Black**
-terminal; move the **red** probe to **Yellow**:
+Still on **P1 — DC volts**, range `20`.
+
+The terminals are on the panel's main strip — the one labeled `16V AC, 50/60Hz, 2.5A
+max.` at its left end:
+
+```
+┌────┬────┬─────┬─────┬──────┬──────┬─────┬─────┬─────┬─────┬────┬────┐
+│ AC │ AC │ AUX+│ AUX-│ BELL+│ BELL-│ RED │ BLK │ YEL │ GRN │PGM1│PGM2│
+└────┴────┴─────┴─────┴──────┴──────┴─────┴─────┴─────┴─────┴────┴────┘
+                                       ▲     ▲     ▲
+                                   RED─┘ BLK─┘ YEL─┘
+```
+
+> **Not** the zone `COM` terminals — those are a different thing entirely and aren't
+> used here. See [`multimeter-basics.md` §0](multimeter-basics.md).
+
+**Black** probe stays on the panel's **`BLK`** terminal; move the **red** probe to
+**`YEL`**. Watch for 15–20 seconds, then repeat on **`GRN`**.
+
+**Easier alternative:** the keypad's own terminal block is labeled `R B Y G Z` and
+carries the same signals. Black probe on **`B`**, red probe on **`Y`** works just as
+well and is often easier to reach.
+
+> **Correction to an earlier version of this section.** It said "steady = dead,
+> wobbling = alive." That is wrong and misleading. A multimeter averages, so a square
+> wave with a *constant duty cycle* averages to a perfectly **steady** intermediate
+> number. Steadiness tells you the switching is regular, not that it's absent. What
+> matters is **where the reading sits**, not whether it holds still.
 
 | Reading | Meaning |
 |---|---|
-| Steady, unwavering ~12 V with no movement in the last digits | Suspicious — consistent with a halted CPU |
-| A reading that wobbles, drifts, or sits at some odd intermediate value | The line is pulsing. **The panel is clocking.** |
+| Steady at the rail (~13.6 V, same as `RED`–`BLK`) | Line parked high, not switching — **consistent with a halted CPU** |
+| Steady at ~0 V | Line stuck low — fault |
+| **Steady at an intermediate value** (say 2–10 V) | **Line is switching at a constant duty cycle — the panel is clocking** ✅ |
+| Wobbling or drifting | Switching with a varying duty cycle — also clocking |
 
-A multimeter can't show you a waveform; it averages. That's exactly why a pulsing line
-gives an unstable or intermediate reading instead of a clean 12 V. The instability
-*is* the signal here.
+A halted processor parks a digital output *at* a rail. Any reading meaningfully away
+from both rails means the line is toggling.
+
+**Measured on this panel:**
+
+| Measurement | Reading | Verdict |
+|---|---|---|
+| `RED`–`BLK` | **13.6 V** | Power supply healthy |
+| `YEL`–`BLK` | **3.95 V** steady (≈29% duty) | **Clock running** |
+| `GRN`–`BLK` | **6.15 V** (≈45% duty) | **Data flowing** |
+
+**All four Keybus conductors work at the panel.** Powered, clocking, transmitting.
+The "dead board" outcome is ruled out, and so is the shorted-data-line theory.
+
+**At the keypad terminals** (`B`→`Y`, `B`→`G`), master bedroom: **3.94 V / 6.14 V**.
+Downstairs keypad: the same. Identical to the panel within measurement noise — **the
+house wiring is perfect** and full-strength signal reaches both keypads.
+
+### Physical layer: complete
+
+| Layer | Status |
+|---|---|
+| Transformer | ✅ |
+| Panel power supply (13.6 V) | ✅ |
+| Panel CPU / clock | ✅ |
+| Panel data transmission | ✅ |
+| House wiring to both keypads | ✅ |
+| Keypads receiving power and signal | ✅ |
+
+Everything electrical checks out. The remaining fault is at the **protocol or
+configuration level**, and multimeter diagnostics are exhausted. Stop measuring.
+
+### Single-keypad test: negative
+
+Each keypad was run alone, with the other fully disconnected (all four conductors) and
+the panel power-cycled. **Both behaved identically** — same beep, same Trouble LED, same
+dead keys.
+
+Conclusion: **no bus slot conflict, and neither keypad is individually faulty.**
+
+### Minimum configuration test: negative
+
+`AUX+/AUX−` and both `PGM` terminals were found **empty** — nothing was ever connected
+to them. Zone wires were then removed one at a time. Behaviour never changed at any
+point, including at transformer-plus-one-keypad.
+
+> Side finding: an empty AUX means **no powered detectors exist on this system.**
+> "Master Bedroom" and "2nd Floor" are passive contacts, not PIRs. The PIR warm-up
+> caveat in Stage 1b does not apply to this installation.
+
+### Eliminated — free diagnostics complete
+
+Dead board · dead transformer · bad power supply · halted CPU · dead clock line · dead
+data line · house wiring · bus slot conflict · either keypad · every field connection.
+
+All ruled out with a multimeter and free tests. What remains is the panel's **internal
+state** — EEPROM contents, or a startup sequence that never completes. Nothing a
+multimeter can reach. Further LED-watching will not resolve it.
+
+### Stopping rule
+
+If the panel still behaves this way after **both** a known-good battery **and** a
+factory default, stop. At that point the fault lies where only a decoded bus or a
+schematic reaches, and the hours invested exceed the cost of a Konnected kit. Not
+because the board is certainly bad — because the expected return has gone negative.
+
+### What to try, cheapest first
+
+1. **Run with only ONE keypad** (free). Disconnect the other at its `R B Y G Z`
+   terminals — all four wires. DSC keypads need unique bus slots; two on the same slot
+   collide, garbling keypad→panel traffic while panel→keypad broadcasts still arrive.
+   That yields lit-but-unresponsive keypads on both units.
+2. **Install a battery** (~$25). DSC panels run a battery test at startup and some will
+   not complete initialization without one. A panel stuck mid-init would clock,
+   transmit, beep on a cycle, and never reach normal operation — exactly these
+   symptoms. Also needed regardless of outcome.
+3. **Hardware factory default** (free). Clears possible EEPROM corruption after 20
+   years *and* resets installer code to `5555` / master to `1234`, solving the unknown-
+   code problem. Needs no keypad input. Wipes programming that belongs to a monitoring
+   company no longer in use. Verify against manual §5.28; won't work if installer
+   lockout was set.
+4. **ESP32 + `KeybusReader`.** The bus carries real traffic, so decode it — is the panel
+   repeating an init command forever? What trouble is it reporting? Does it acknowledge
+   the keypads? Real evidence rather than inference.
+
+### Then measure GRN — the data line
+
+Black probe stays on `BLK`, red probe to `GRN`.
+
+| `GRN`–`BLK` | Likely meaning |
+|---|---|
+| Some intermediate value | Data flowing; look at enrollment or the keypad receive side |
+| Pinned at ~13.6 V | No data being transmitted |
+| **Pinned at ~0 V** | **Data line shorted to ground** — explains powered-but-mute keypads |
+
+**Isolation test if `GRN` is pinned at a rail:** power down, disconnect the field wires
+from the `GRN` terminal only, power up, measure `GRN` again with nothing attached.
+
+- Normal with wiring off → short is in the house wiring or a keypad. Reconnect one at a
+  time to find it.
+- Still pinned with nothing attached → the panel's data driver has failed.
 
 Repeat on **Green (data) to Black**. Data is quieter than clock — it carries traffic in
 bursts rather than continuously — so a steadier reading on Green is less alarming than
@@ -417,6 +599,100 @@ So on first power-up, a healthy panel should light **zone LEDs 1, 3 and 8** unde
 
 None of these block anything — the ESP32 interface works fine with the trouble light
 on. Clear them for a quiet keypad, not for function.
+
+### Reading the status LEDs on first power-up
+
+| LED | Off | On |
+|---|---|---|
+| **Ready** | At least one zone is open — **expected on a fresh power-up** | All zones closed; system can be armed |
+| **Armed** | Disarmed — normal | Armed, or arming |
+| **Trouble** | No troubles | One or more troubles; `[*][2]` lists them |
+| **Memory** | — | An alarm occurred and is stored |
+| **Fire** | — | Fire zone alarm or trouble |
+| **Program** | — | **In programming mode** — `[#]` twice to exit; this blocks `[*][2]` |
+
+**Ready will be off at first, and that is not a fault.** Two causes, both benign:
+
+- **PIR warm-up.** Motion detectors take roughly 1–3 minutes after power-up to
+  stabilize and hold their zone open until they do.
+- Any door or window actually standing open.
+
+**The warm-up test:** close every door and window, leave the area so the motions see no
+movement, wait three full minutes, then look. If **Ready** lights, every zone is
+healthy and the sensors survived — which also means you can skip Stage 1b.
+
+With Ready off, **the lit numbered zone LEDs 1–8 show which zones are open.** That is
+the most informative readout on the keypad, and it's available without entering any
+code.
+
+### Beeping that `[#]` won't silence, and keys that do nothing
+
+If **no** keypad command registers — `[#]` doesn't silence, `[*][2]` doesn't respond —
+the problem is usually not which key you pressed. Suspect a **brownout reset loop**.
+
+DSC keypads beep as they initialize and enroll on the Keybus. A panel that resets
+repeatedly produces one beep per cycle, keypads that keep re-initializing, Ready and
+Armed that never settle, and keystrokes that vanish because the panel restarts before
+it can process them.
+
+**Cause: running with no battery.** The battery absorbs current surges. On AC only,
+two keypads plus motion detectors plus PGM devices can sag the rail far enough to
+brown out the panel, which resets and repeats.
+
+**Confirm it — two free checks:**
+
+1. **Watch the keypad LEDs at the moment of each beep.** Backlight or zone LEDs
+   blinking off and back = the display is re-initializing = reset loop. Settled.
+2. **Measure Keybus Red-to-Black (P1, DC, range 20) while it beeps.** Steady `13.8`
+   argues against brownout. A reading bouncing between ~9 and ~13 confirms it.
+
+**The decisive test — shed load:**
+
+1. Power down.
+2. Disconnect **AUX+ / AUX−** (motions and powered devices).
+3. Disconnect **one** of the two keypads, leaving a single keypad on the bus.
+4. Power up.
+
+Beeping stops and the keypad starts accepting keys → it was a power budget problem, not
+a fault.
+
+**The fix is the battery** — 12 V 7 Ah SLA, ~$25, which you need anyway.
+
+If voltage is rock-steady and nothing re-initializes on each beep, the reset theory is
+wrong; look at dead keypad membranes or a fire-zone trouble instead.
+
+### If `[*][2]` doesn't respond
+
+Common on first power-up, and almost always a keypad state problem rather than a fault.
+
+1. **Press `[#]` first.** This exits whatever state the keypad is in and silences the
+   trouble annunciation. Most `[*][2]` failures are the keypad sitting in another mode.
+2. Press `[*]` and `[2]` as **two separate keystrokes**, not together.
+3. A **single long beep** means the panel rejected the command — press `[#]` again and
+   retry.
+4. Remember the output is **lit zone LEDs 1–8**, not text. If you're waiting for a
+   display to say something, nothing will appear to happen.
+5. If the **Program** light is lit, you're in programming mode — `[#]` to exit, twice
+   if needed.
+
+If a trouble is present but you can't read the codes, the trouble itself is still real.
+The Trouble LED alone plus the known context (no battery, no phone line, clock lost) is
+usually enough to proceed.
+
+### Beep patterns — what they mean
+
+The rate matters, and it's easy to misread on first power-up:
+
+| Pattern | Meaning |
+|---|---|
+| Two short beeps every ~10 seconds | **Trouble present.** Normal here. `[#]` silences it. |
+| One beep per second | Exit delay counting down — the system is arming |
+| Continuous / steady tone | Entry delay running |
+| Rapid or temporal pattern, Memory lit | Alarm condition — **if the bell is still connected it will sound** |
+
+> ⚠️ If you power up with the bell still wired and a 24-hour zone is faulted, the panel
+> can go straight to alarm. Disconnecting `+BELL−` before first power-up (stage 3)
+> avoids the surprise.
 
 ### If you plan to reprogram: get an LCD keypad
 

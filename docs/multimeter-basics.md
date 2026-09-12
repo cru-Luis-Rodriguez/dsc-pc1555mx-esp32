@@ -9,6 +9,43 @@ here is not injury, it's misreading — and then throwing out a working panel.
 
 ---
 
+## 0. Two bits of naming that trip people up
+
+**`P1`–`P4` are procedure numbers in this document. They are not places on the panel.**
+When another doc says "use P1", it means "set the meter up for DC volts as described in
+section 5 here." Nothing on the hardware is labeled P1.
+
+**`COM` means two different things** in this project:
+
+| Where | What it is |
+|---|---|
+| **On the multimeter** | The socket the **black probe plugs into**. This is the one meant whenever these docs say "black probe → `COM`". |
+| **On the alarm panel** | The zone common terminals (`Z1 COM Z2 Z3 COM Z4 …`). Only used in the Stage 1b zone-loop test. |
+
+They are unrelated. For every voltage measurement, `COM` means the meter's socket.
+
+---
+
+## 0b. This project's meter — Southwire 21005N
+
+| | |
+|---|---|
+| Type | AC clamp meter with DMM functions |
+| Ranging | **Auto-ranging** — ignore every "set the range to 20" instruction below and in the other docs; it picks the scale itself |
+| Jacks | **Only two**: `COM` (black lead) and `V` (red lead) |
+| DC volts | Dial position **`V⎓`** — V with a straight line over dashes |
+| AC volts | Dial position **`V∼`** — V with a wavy line |
+| Resistance / continuity | The `Ω` position, same two jacks |
+| Current | Measured through the **clamp jaw**, not the probes |
+
+**The 10 A jack hazard in §1 does not apply to this meter** — it has no current jack,
+because current goes through the clamp. One less way to go wrong.
+
+**Remembering which V is which:** AC alternates, so it's drawn as a **wave** (`∼`).
+DC is steady, so it's drawn as a **straight line** (`⎓`). Flat means DC.
+
+---
+
 ## 1. Your meter has three parts
 
 **The display.** Shows a number and a unit. The unit matters enormously — `13.80 V`
