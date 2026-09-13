@@ -472,6 +472,37 @@ All ruled out with a multimeter and free tests. What remains is the panel's **in
 state** — EEPROM contents, or a startup sequence that never completes. Nothing a
 multimeter can reach. Further LED-watching will not resolve it.
 
+### ⏸ Current state — waiting on battery
+
+**Ordered:** Casil `CA1240`, 12 V 4 Ah SLA, F1 terminals — exact replacement for the
+original, chosen to eliminate fit and terminal variables from the test.
+
+**Panel is currently left:** bell disconnected, one keypad possibly disconnected, zones
+possibly disconnected, no battery. Restore to normal config before testing.
+
+#### When the battery arrives
+
+1. **Meter it before installing** (P1, DC volts). Want **12.8–13.0 V** open-circuit.
+   Below ~12.4 V it has sat too long — return it rather than repeat this test with a
+   second bad battery.
+2. **Transformer unplugged.** Reconnect the zones and the second keypad — field wiring
+   is proven good. **Leave the bell disconnected** to avoid a surprise siren.
+3. **Battery first, then AC.** Red to `+`, black to `−`, verify polarity, then plug in
+   the transformer. The order matters: the test is whether the panel completes startup
+   with a battery present.
+4. Wait a few minutes, then check for any change from current behaviour:
+   - Trouble LED off, or reporting only the phone line
+   - Zone LEDs responding to doors opening and closing
+   - **Ready** lighting with everything closed
+   - `[#]` and `[*][2]` actually registering
+
+Any one of those changing means the battery was the answer.
+
+#### If it doesn't change anything
+
+Go to the factory default (item 3 above), then the ESP32 bus decode (item 4), then the
+stopping rule below.
+
 ### Stopping rule
 
 If the panel still behaves this way after **both** a known-good battery **and** a
