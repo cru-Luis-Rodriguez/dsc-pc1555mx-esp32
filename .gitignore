@@ -1,3 +1,6 @@
 .pio/
 .vscode/
 include/secrets.h
+
+# Serial captures. A floating GPIO 18 can produce megabytes in seconds.
+*.log

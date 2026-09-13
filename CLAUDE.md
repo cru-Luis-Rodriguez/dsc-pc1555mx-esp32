@@ -113,6 +113,28 @@ on every upgrade.
 
 Close any interactive monitor before capturing — the port allows one reader.
 
+The script exits 1 on zero bytes, so a zero exit already implies a non-zero byte count.
+Don't check both.
+
+### A flood of output is not success
+
+With the tap **unwired**, GPIO 18 is a floating input. It picks up ambient coupling and
+the library reads the noise as bus transitions — one bare-board capture produced
+**214,552 `Keybus disconnected` lines in 20 seconds** (4.5 MB). Entirely benign, and
+nothing to do with the panel.
+
+This matters once the tap *is* wired, because **a missing ground connection produces the
+same flood rather than silence.** Two hundred thousand lines scrolling past reads like
+"lots of traffic, it's working." It is the opposite.
+
+| Output | Meaning |
+|---|---|
+| Silence, one `Keybus disconnected` | No clock edges. Panel unpowered, or tap not connected. |
+| **Flood of connect/disconnect churn** | **Floating input — ground not tied, or signal not landing** |
+| Structured lines: timestamp, binary, `[hex command]`, decoded message | **Working** |
+
+Judge by structure, not volume.
+
 ## Gotchas that will cost you time
 
 - **Do not bump `platform = espressif32@6.9.0`.** dscKeybusInterface does not compile
