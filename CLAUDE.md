@@ -49,6 +49,21 @@ every field connection (tested at transformer-plus-one-keypad).
 **Remaining:** the panel's internal state — EEPROM contents, or a startup sequence that
 never completes.
 
+## Physical state right now — read this before diagnosing anything
+
+| Thing | State |
+|---|---|
+| ESP32 | On the desk, **USB only**. Flashed with `reader`, verified working. |
+| **Keybus tap** | **NOT WIRED.** No resistors, no connection to the panel at all. |
+| Buck converter | Unopened. Not needed — USB powers the board for bench work. |
+| Panel | Partly disassembled from diagnostics. Bell disconnected. Second keypad and some zone wires may still be off. Power state uncertain. |
+| Battery | On order, not yet installed. |
+
+> **`Keybus disconnected` and zero bytes is the CORRECT output in this state.** It is
+> the pass condition for the bare-board test — it proves board, flash, serial link and
+> library all work with nothing attached. Do not diagnose it as a fault until the tap
+> is actually wired and the panel is actually powered.
+
 ## Next actions, in order
 
 1. **Install the replacement battery when it arrives** (procedure in
@@ -75,8 +90,28 @@ pio run -e web    -t upload -t monitor   # self-hosted LAN page
 
 Serial port on this Mac: `/dev/cu.usbserial-0001`, 115200 baud.
 
-`pio device monitor` runs until interrupted — wrap it (`timeout 30 …`) when capturing
-output non-interactively rather than blocking.
+### Capturing serial output non-interactively
+
+**Do not use `pio device monitor` from a script or agent session.** It requires a tty
+and dies with `termios.error: (102, 'Operation not supported on socket')` the moment
+its output is redirected. And macOS has no `timeout` — that's GNU coreutils, absent
+unless someone brew-installed it.
+
+Use the capture script instead:
+
+```
+~/.platformio/penv/bin/python tools/capture_serial.py /dev/cu.usbserial-0001 115200 30 out.log
+```
+
+All four arguments are optional; those are the defaults. Output goes to both stdout and
+the file, so it works redirected.
+
+Use `~/.platformio/penv/bin/python` — PlatformIO's own virtualenv, which already has
+pyserial. Do **not** hardcode a Homebrew Cellar path like
+`/opt/homebrew/Cellar/platformio/6.1.19_2/…`; it contains the version number and breaks
+on every upgrade.
+
+Close any interactive monitor before capturing — the port allows one reader.
 
 ## Gotchas that will cost you time
 
